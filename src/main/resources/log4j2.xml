@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="ConsoleAppender" target="SYSTEM_OUT">
+            <PatternLayout
+                    pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p %m%n"/>
+        </Console>
+        <RollingFile
+            name="RollingFileAppender"
+            fileName="target\\testlog.log"
+            filePattern="target\\testlog.%d{dd-MMM}.log.gz">
+            <PatternLayout
+                pattern="%d %p %c{1.} [%t] %m%n"/>
+<!--            <PatternLayout>-->
+<!--                %d %p %c{1.} [%t] %m%n-->
+<!--            </PatternLayout>-->
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="5"/>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Root level="DEBUG">
+            <AppenderRef ref="ConsoleAppender"/>
+            <AppenderRef ref="RollingFileAppender"/>
+        </Root>
+    </Loggers>
+</Configuration>
