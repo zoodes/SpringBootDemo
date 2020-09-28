@@ -14,7 +14,7 @@ public class SpringBootDemoApplication {
 		log.info("Creating model1 via @NoArgsConstructor...");
 		firstModel();
 
-		log.info("Creating model2 via @AllAgrsConstructor...");
+		log.info("Creating model2 via @AllArgsConstructor...");
 		secondModel();
 
 		log.info("Creating model3 via @Builder...");
@@ -31,9 +31,7 @@ public class SpringBootDemoApplication {
 		ChildModel model4 = new ChildModel(24);
 		model4.setFio("Test test test");
 		model4.setMale(false);
-		log.debug("model's FIO is {}", model4.getFio());
-		log.debug("model is male? {}", model4.isMale());
-		log.debug("model's phone is {}", model4.getPhone());
+		modelInfo(model4);
 		log.debug("model's age is {}", model4.getAge());
 	}
 

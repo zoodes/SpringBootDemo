@@ -12,22 +12,18 @@
             <PatternLayout
                 pattern="%d %p %c{1.} [%t] %m%n"/>
             <Policies>
-                <SizeBasedTriggeringPolicy size="10MB" />
+                <SizeBasedTriggeringPolicy size="1MB" />
             </Policies>
             <DefaultRolloverStrategy max="5"/>
         </RollingFile>
     </Appenders>
     <Loggers>
         <Root level="DEBUG">
-<!--            <AppenderRef ref="ConsoleAppender"/>-->
             <AppenderRef ref="RollingFileAppender"/>
+            <AppenderRef ref="ConsoleAppender" level="info"/>
         </Root>
-        <Logger name="ru.pchelnikov.SpringBootDemo" additivity="true" level="debug">
+        <Logger name="ru.pchelnikov.SpringBootDemo" additivity="false" level="debug">
             <AppenderRef ref="ConsoleAppender"/>
         </Logger>
-        <Logger name="com" additivity="true" level="info">
-            <AppenderRef ref="ConsoleAppender"/>
-        </Logger>
-
     </Loggers>
 </Configuration>
