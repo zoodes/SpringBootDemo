@@ -23,7 +23,7 @@ public class SpringBootDemoApplication {
 		log.info("Creating model4 as ChildModel via @RequiredArgsConstructor");
 		fourthModel();
 
-		log.info("Enough with children games, starting a SpringBoot app");
+		log.info("Enough with children games, starting the SpringBoot app");
 		SpringApplication.run(SpringBootDemoApplication.class, args);
 	}
 

@@ -11,9 +11,6 @@
             filePattern="target\\testlog.%d{dd-MMM}.log.gz">
             <PatternLayout
                 pattern="%d %p %c{1.} [%t] %m%n"/>
-<!--            <PatternLayout>-->
-<!--                %d %p %c{1.} [%t] %m%n-->
-<!--            </PatternLayout>-->
             <Policies>
                 <SizeBasedTriggeringPolicy size="10MB" />
             </Policies>
@@ -22,8 +19,15 @@
     </Appenders>
     <Loggers>
         <Root level="DEBUG">
-            <AppenderRef ref="ConsoleAppender"/>
+<!--            <AppenderRef ref="ConsoleAppender"/>-->
             <AppenderRef ref="RollingFileAppender"/>
         </Root>
+        <Logger name="ru.pchelnikov.SpringBootDemo" additivity="true" level="debug">
+            <AppenderRef ref="ConsoleAppender"/>
+        </Logger>
+        <Logger name="com" additivity="true" level="info">
+            <AppenderRef ref="ConsoleAppender"/>
+        </Logger>
+
     </Loggers>
 </Configuration>

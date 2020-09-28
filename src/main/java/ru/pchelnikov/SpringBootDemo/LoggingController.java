@@ -11,12 +11,12 @@ public class LoggingController {
 
     @RequestMapping("/")
     public String index() {
-        logger.trace("TRACE message");
-        logger.debug("DEBUG message");
-        logger.info("INFO message");
-        logger.warn("WARN message");
-        logger.error("ERROR message");
+        logger.trace("TRACE message from LoggingController");
+        logger.debug("DEBUG message from LoggingController");
+        logger.info("INFO message from LoggingController");
+        logger.warn("WARN message from LoggingController");
+        logger.error("ERROR message from LoggingController");
 
-        return "Check your logs in console and file...";
+        return "Check your logs in console and file target/testlog.log";
     }
 }
