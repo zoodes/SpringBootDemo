@@ -5,6 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import ru.pchelnikov.SpringBootDemo.Handlers.BotHandler;
 import ru.pchelnikov.SpringBootDemo.Handlers.ProxyHandler;
 
 @Slf4j
@@ -18,8 +19,11 @@ public class SpringBootDemoApplication {
 		log.info("Creating application context");
 		ApplicationContext context = new AnnotationConfigApplicationContext("ru.pchelnikov.SpringBootDemo");
 
-		log.info("Starting the SpringBoot application");
-		SpringApplication.run(SpringBootDemoApplication.class, args);
+		log.info("Launch TGBOT");
+		BotHandler.startBot();
+
+		//log.info("Starting the SpringBoot application");
+		//SpringApplication.run(SpringBootDemoApplication.class, args);
 	}
 
 }

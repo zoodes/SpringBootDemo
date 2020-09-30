@@ -17,7 +17,6 @@ import javax.annotation.PostConstruct;
 //pchel_study_bot
 
 @Slf4j
-@Component
 public class BotHandler extends TelegramLongPollingBot {
     private static final String TOKEN = "1273448729:AAEsX77rwpBf-i1iYFLkbvOFctnUEVsY6vc";
     private static final String BOT_NAME = "pchel_study_bot";
@@ -64,7 +63,7 @@ public class BotHandler extends TelegramLongPollingBot {
         return TOKEN;
     }
 
-    @PostConstruct
+
     public static void startBot() {
         ApiContextInitializer.init();
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
