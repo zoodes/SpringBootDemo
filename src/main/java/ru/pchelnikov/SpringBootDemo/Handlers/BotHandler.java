@@ -28,8 +28,7 @@ public class BotHandler extends TelegramLongPollingBot {
         switch(message.toLowerCase()) {
             case ("/start"):
             case ("/hello"):
-                String userName = update.getMessage().getFrom().getFirstName()
-                        + " " + update.getMessage().getFrom().getLastName();
+                String userName = update.getMessage().getFrom().getUserName();
                 reply = "Hello, " + userName;
                 break;
             case ("/info"):

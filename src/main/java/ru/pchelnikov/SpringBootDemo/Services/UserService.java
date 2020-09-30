@@ -16,8 +16,7 @@ public class UserService {
     public static void createUser(Update update) {
         User user = new User(
                 update.getMessage().getChatId(),
-                update.getMessage().getFrom().getFirstName()
-                        + " " + update.getMessage().getFrom().getLastName(),
+                update.getMessage().getFrom().getUserName(),
                 null
         );
         log.info("User {} has been created", user.getUserName());
