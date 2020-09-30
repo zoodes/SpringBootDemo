@@ -15,13 +15,13 @@ import java.util.ArrayList;
 public class SpringBootDemoApplication {
 
 	public static void main(String[] args) {
-		log.info("Trying to bypass proxy, if it exists");
-		ProxyHandler.bypassProxy();
+//		log.info("Trying to bypass proxy, if it exists");
+//		ProxyHandler.bypassProxy();
 
 //		log.info("Creating application context");
 //		ApplicationContext context = new AnnotationConfigApplicationContext("ru.pchelnikov.SpringBootDemo");
 
-		log.info("Launch TGBOT");
+		log.info("Launch telegram bot");
 		BotHandler.startBot();
 
 //		log.info("Starting the SpringBoot application");

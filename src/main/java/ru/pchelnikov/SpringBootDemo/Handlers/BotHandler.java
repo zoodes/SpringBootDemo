@@ -33,7 +33,28 @@ public class BotHandler extends TelegramLongPollingBot {
         log.info("New message received: {}", update.getMessage().toString());
 
         sendMsg(update.getMessage().getChatId().toString(), message);
+        log.info("The same message was sent back to user");
 
+        log.info("Trying to create new User, if he/she doesn't exist");
+        createUser(update);
+    }
+
+    private void createUser(Update update) {
+        User user = new User(
+                update.getMessage().getChatId(),
+                update.getMessage().getFrom().getFirstName()
+                        + " " + update.getMessage().getFrom().getLastName(),
+                null
+                );
+        log.info("User {} has been created", user.getUserName());
+
+        if (!userList.contains(user)) {
+            userList.add(user);
+            log.info("User {} has been added to userList!", user.getUserName());
+        } else {
+            log.warn("userList already contains user {}!", user.getUserName());
+        }
+        log.info("userList now consists of: " + userList.toString());
     }
 
     /**
