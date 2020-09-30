@@ -6,7 +6,7 @@ import java.net.PasswordAuthentication;
 public class ProxyHandler {
     /**
      * bypassing proxy that I have at work.
-     * needs setup VM Options as written below
+     * To work, needs setup VM Options as written below
      * (maybe some of them are not necessary, but it works):
      * -Dhttps.proxyHost=proxy
      * -Dhttps.proxyPort=port
@@ -16,6 +16,7 @@ public class ProxyHandler {
      * -Dhttp.proxyPassword=password
      * -Dhttp.nonProxyHosts="localhost|127.0.0.1|10.*.*.*"
      * -Djdk.http.auth.tunneling.disabledSchemes=
+     * If not configured, doesn't influence work of rest program
      */
     public static void bypassProxy() {
         final String proxyUser = System.getProperty("http.proxyUser");
