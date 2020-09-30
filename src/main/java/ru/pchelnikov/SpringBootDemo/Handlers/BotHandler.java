@@ -32,7 +32,23 @@ public class BotHandler extends TelegramLongPollingBot {
         String message = update.getMessage().getText();
         log.info("New message received: {}", update.getMessage().toString());
 
-        sendMsg(update.getMessage().getChatId().toString(), message);
+        String reply;
+        switch(message.toLowerCase()) {
+            case ("/start"):
+            case ("/hello"):
+                String userName = update.getMessage().getFrom().getFirstName()
+                        + " " + update.getMessage().getFrom().getLastName();
+                reply = "Hello, " + userName;
+                break;
+            case ("/info"):
+                reply = "Here is what I know about you: " +
+                        update.getMessage().getFrom().toString();
+                break;
+            default:
+                reply = message;
+        }
+
+        sendMsg(update.getMessage().getChatId().toString(), reply);
         log.info("The same message was sent back to user");
 
         log.info("Trying to create new User, if he/she doesn't exist");
