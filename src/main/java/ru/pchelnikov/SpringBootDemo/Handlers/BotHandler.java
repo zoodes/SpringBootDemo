@@ -9,8 +9,10 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
+import ru.pchelnikov.SpringBootDemo.User;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 
 //1273448729:AAEsX77rwpBf-i1iYFLkbvOFctnUEVsY6vc
 //PchelBot
@@ -20,6 +22,7 @@ import javax.annotation.PostConstruct;
 public class BotHandler extends TelegramLongPollingBot {
     private static final String TOKEN = "1273448729:AAEsX77rwpBf-i1iYFLkbvOFctnUEVsY6vc";
     private static final String BOT_NAME = "pchel_study_bot";
+    private static ArrayList<User> userList = new ArrayList<>();
 
     /**
      * method for receiving messages
@@ -27,7 +30,10 @@ public class BotHandler extends TelegramLongPollingBot {
      */
     public void onUpdateReceived(Update update) {
         String message = update.getMessage().getText();
+        log.info("New message received: {}", update.getMessage().toString());
+
         sendMsg(update.getMessage().getChatId().toString(), message);
+
     }
 
     /**
