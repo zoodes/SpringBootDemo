@@ -90,9 +90,9 @@ public class BotHandler extends TelegramLongPollingBot {
         return TOKEN;
     }
 
-//    @PostConstruct
+    @PostConstruct
     public static void startBot() {
-
+        log.info("Launching TelegramBot");
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
         try {
             telegramBotsApi.registerBot(new BotHandler());
