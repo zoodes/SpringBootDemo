@@ -54,9 +54,9 @@ public class ProxyHandler {
                 //System.out.println(inputLine);
             }
             in.close();
-            log.info("Connection via proxy established successfully");
+            log.info("Connection established successfully");
         } catch (IOException e) {
-            log.error("Connection via proxy failed!");
+            log.error("Connection failed!");
             e.printStackTrace();
         }
     }
