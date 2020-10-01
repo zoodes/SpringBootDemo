@@ -33,8 +33,22 @@ public class UserService {
         log.info("userList now consists of: " + USER_MAP.values().toString());
     }
 
+    /**
+     * updates birthDate of user
+     * @param update update from telegram bot
+     * @param birthDate birthdate of user
+     */
     public static void updateBirthDate(Update update, Date birthDate) {
         User user = USER_MAP.get(update.getMessage().getChatId());
         user.setBirthDate(birthDate);
+    }
+
+    /**
+     * checks if user already exists
+     * @param chatId chatId of user
+     * @return boolean true, if user exists, else false
+     */
+    public static boolean hasUser(Long chatId) {
+        return USER_MAP.containsKey(chatId);
     }
 }

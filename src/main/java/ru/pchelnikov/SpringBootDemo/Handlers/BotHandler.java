@@ -77,8 +77,9 @@ public class BotHandler extends TelegramLongPollingBot {
         sendMsg(update.getMessage().getChatId().toString(), reply);
         log.info("The reply was sent back to user");
 
-        log.info("Creating new User");
-        UserService.createUser(update);
+        if (!UserService.hasUser(update.getMessage().getChatId())) {
+            UserService.createUser(update);
+        }
     }
 
     /**
