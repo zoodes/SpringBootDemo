@@ -4,8 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.telegram.telegrambots.ApiContextInitializer;
-import ru.pchelnikov.SpringBootDemo.Handlers.BotHandler;
-import ru.pchelnikov.SpringBootDemo.Handlers.ProxyHandler;
 
 @Slf4j
 @SpringBootApplication(scanBasePackages = "ru.pchelnikov.SpringBootDemo")
@@ -20,11 +18,6 @@ public class SpringBootDemoApplication {
 
 		log.info("Starting the SpringBoot application");
 		SpringApplication.run(SpringBootDemoApplication.class, args);
-
-//		log.info("Launch telegram bot");
-//		BotHandler.startBot();
-
-
 	}
 
 }

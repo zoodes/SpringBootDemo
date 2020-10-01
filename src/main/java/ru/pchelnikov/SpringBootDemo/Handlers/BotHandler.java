@@ -1,10 +1,7 @@
 package ru.pchelnikov.SpringBootDemo.Handlers;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -36,15 +33,21 @@ public class BotHandler extends TelegramLongPollingBot {
         log.info("New message received: {}", update.getMessage().toString());
 
         String reply;
-        switch(message.toLowerCase()) {
+        switch(message.toLowerCase().trim()) {
             case ("/start"):
             case ("/hello"):
                 String userName = update.getMessage().getFrom().getUserName();
-                reply = "Hello, " + userName;
+                reply = "Hello, " + userName + "!\n"
+                    + "List of available commands:\n"
+                    + "/info - get info that is available about you\n"
+                    + "/birthday - if you want to tell us your birthday";
                 break;
             case ("/info"):
                 reply = "Here is what I know about you: " +
                         update.getMessage().getFrom().toString();
+                break;
+            case("/birthday"):
+                reply = "I'm sorry, this functionality is not available yet :(";
                 break;
             default:
                 reply = message;
@@ -53,7 +56,7 @@ public class BotHandler extends TelegramLongPollingBot {
         sendMsg(update.getMessage().getChatId().toString(), reply);
         log.info("The reply was sent back to user");
 
-        log.info("Trying to create new User, if he/she doesn't exist");
+        log.info("Creating new User");
         UserService.createUser(update);
     }
 
@@ -93,6 +96,8 @@ public class BotHandler extends TelegramLongPollingBot {
     @PostConstruct
     public static void startBot() {
         log.info("Launching TelegramBot");
+        log.info("Bot name used: {}", BOT_NAME);
+        log.info("Token used: {}", TOKEN);
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
         try {
             telegramBotsApi.registerBot(new BotHandler());
