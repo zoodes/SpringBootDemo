@@ -36,24 +36,26 @@ public class BotHandler extends TelegramLongPollingBot {
         String message = update.getMessage().getText();
         log.info("New message received: {}", update.getMessage().toString());
 
-        String reply = null;
+        if (!UserService.hasUser(update.getMessage().getChatId())) {
+            UserService.createUser(update);
+        }
+
+        String reply;
 
         if (!isWaitingForRightAnswer) {
             switch(message.toLowerCase().trim()) {
                 case ("/start"):
                 case ("/hello"):
-                    String userName = update.getMessage().getFrom().getUserName();
-                    reply = "Hello, " + userName + "!\n"
-                        + "List of available commands:\n"
-                        + "/info - get info that is available about you\n"
-                        + "/birthday - if you want to set your birthday";
+                    reply = ReplyHandler.startReply(update);
+                    break;
+                case ("/help"):
+                    reply = ReplyHandler.helpReply();
                     break;
                 case ("/info"):
-                    reply = "Here is what I know about you: " +
-                            update.getMessage().getFrom().toString();
+                    reply = ReplyHandler.infoReply(update);
                     break;
                 case("/birthday"):
-                    reply = "Please, enter your birthday in following format: DD-MM-YYYY";
+                    reply = ReplyHandler.birthdayReply();
                     isWaitingForRightAnswer = true;
                     break;
                 default:
@@ -77,9 +79,7 @@ public class BotHandler extends TelegramLongPollingBot {
         sendMsg(update.getMessage().getChatId().toString(), reply);
         log.info("The reply was sent back to user");
 
-        if (!UserService.hasUser(update.getMessage().getChatId())) {
-            UserService.createUser(update);
-        }
+
     }
 
     /**

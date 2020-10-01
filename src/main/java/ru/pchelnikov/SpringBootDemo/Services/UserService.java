@@ -51,4 +51,8 @@ public class UserService {
     public static boolean hasUser(Long chatId) {
         return USER_MAP.containsKey(chatId);
     }
+
+    public static User getUser(Long chatId) {
+        return USER_MAP.get(chatId);
+    }
 }
