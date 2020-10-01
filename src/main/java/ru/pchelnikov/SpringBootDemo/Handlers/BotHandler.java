@@ -15,8 +15,8 @@ import ru.pchelnikov.SpringBootDemo.Services.UserService;
 
 import javax.annotation.PostConstruct;
 
-//@Component
 @Slf4j
+@Component
 public class BotHandler extends TelegramLongPollingBot {
 //    @Value("${bot.token}")
 //    private static String TOKEN;
@@ -92,7 +92,7 @@ public class BotHandler extends TelegramLongPollingBot {
 
 //    @PostConstruct
     public static void startBot() {
-        ApiContextInitializer.init();
+
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
         try {
             telegramBotsApi.registerBot(new BotHandler());

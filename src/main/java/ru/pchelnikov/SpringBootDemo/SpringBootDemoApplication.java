@@ -3,6 +3,7 @@ package ru.pchelnikov.SpringBootDemo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.telegram.telegrambots.ApiContextInitializer;
 import ru.pchelnikov.SpringBootDemo.Handlers.BotHandler;
 import ru.pchelnikov.SpringBootDemo.Handlers.ProxyHandler;
 
@@ -11,10 +12,13 @@ import ru.pchelnikov.SpringBootDemo.Handlers.ProxyHandler;
 public class SpringBootDemoApplication {
 
 	public static void main(String[] args) {
-		log.info("Trying to bypass proxy, if it exists");
-		ProxyHandler.bypassProxy();
+//		log.info("Trying to bypass proxy, if it exists");
+//		ProxyHandler.bypassProxy();
+		log.info("Initializing TelegramBot");
+		ApiContextInitializer.init();
 		log.info("Starting the SpringBoot application");
 		SpringApplication.run(SpringBootDemoApplication.class, args);
+
 		log.info("Launch telegram bot");
 		BotHandler.startBot();
 
