@@ -1,6 +1,9 @@
 package ru.pchelnikov.SpringBootDemo.Handlers;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -10,11 +13,14 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import ru.pchelnikov.SpringBootDemo.Services.UserService;
 
-
+@Component
 @Slf4j
 public class BotHandler extends TelegramLongPollingBot {
-    private static final String TOKEN = "1273448729:AAEsX77rwpBf-i1iYFLkbvOFctnUEVsY6vc";
-    private static final String BOT_NAME = "pchel_study_bot";
+    @Value("${bot.token}")
+    private static String TOKEN;
+
+    @Value("${bot.name}")
+    private static String BOT_NAME;
 
     /**
      * method for receiving messages
