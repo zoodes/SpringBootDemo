@@ -13,19 +13,24 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import ru.pchelnikov.SpringBootDemo.Services.UserService;
 
-@Component
+import javax.annotation.PostConstruct;
+
+//@Component
 @Slf4j
 public class BotHandler extends TelegramLongPollingBot {
-    @Value("${bot.token}")
-    private static String TOKEN;
+//    @Value("${bot.token}")
+//    private static String TOKEN;
+    private static String TOKEN = "1273448729:AAEsX77rwpBf-i1iYFLkbvOFctnUEVsY6vc";
 
-    @Value("${bot.name}")
-    private static String BOT_NAME;
+//    @Value("${bot.name}")
+//    private static String BOT_NAME;
+    private static String BOT_NAME = "pchel_test_bot";
 
     /**
      * method for receiving messages
      * @param update contains message from user
      */
+    @Override
     public void onUpdateReceived(Update update) {
         String message = update.getMessage().getText();
         log.info("New message received: {}", update.getMessage().toString());
@@ -85,7 +90,7 @@ public class BotHandler extends TelegramLongPollingBot {
         return TOKEN;
     }
 
-
+//    @PostConstruct
     public static void startBot() {
         ApiContextInitializer.init();
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi();

@@ -13,12 +13,12 @@ public class SpringBootDemoApplication {
 	public static void main(String[] args) {
 		log.info("Trying to bypass proxy, if it exists");
 		ProxyHandler.bypassProxy();
-
+		log.info("Starting the SpringBoot application");
+		SpringApplication.run(SpringBootDemoApplication.class, args);
 		log.info("Launch telegram bot");
 		BotHandler.startBot();
 
-		log.info("Starting the SpringBoot application");
-		SpringApplication.run(SpringBootDemoApplication.class, args);
+
 	}
 
 }
