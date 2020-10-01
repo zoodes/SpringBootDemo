@@ -3,6 +3,7 @@ package ru.pchelnikov.SpringBootDemo.Services;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,5 +31,10 @@ public class UserService {
             log.warn("userList already contains user {}!", user.getUserName());
         }
         log.info("userList now consists of: " + USER_MAP.values().toString());
+    }
+
+    public static void updateBirthDate(Update update, Date birthDate) {
+        User user = USER_MAP.get(update.getMessage().getChatId());
+        user.setBirthDate(birthDate);
     }
 }

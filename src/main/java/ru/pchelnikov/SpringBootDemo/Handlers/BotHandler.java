@@ -11,17 +11,21 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import ru.pchelnikov.SpringBootDemo.Services.UserService;
 
 import javax.annotation.PostConstruct;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Slf4j
 @Component
 public class BotHandler extends TelegramLongPollingBot {
 //    @Value("${bot.token}")
 //    private static String TOKEN;
-    private static String TOKEN = "1273448729:AAEsX77rwpBf-i1iYFLkbvOFctnUEVsY6vc";
+    private static final String TOKEN = "1273448729:AAEsX77rwpBf-i1iYFLkbvOFctnUEVsY6vc";
 
 //    @Value("${bot.name}")
 //    private static String BOT_NAME;
-    private static String BOT_NAME = "pchel_test_bot";
+    private static final String BOT_NAME = "pchel_test_bot";
+    private static boolean isWaitingForRightAnswer = false;
 
     /**
      * method for receiving messages
@@ -32,25 +36,42 @@ public class BotHandler extends TelegramLongPollingBot {
         String message = update.getMessage().getText();
         log.info("New message received: {}", update.getMessage().toString());
 
-        String reply;
-        switch(message.toLowerCase().trim()) {
-            case ("/start"):
-            case ("/hello"):
-                String userName = update.getMessage().getFrom().getUserName();
-                reply = "Hello, " + userName + "!\n"
-                    + "List of available commands:\n"
-                    + "/info - get info that is available about you\n"
-                    + "/birthday - if you want to tell us your birthday";
-                break;
-            case ("/info"):
-                reply = "Here is what I know about you: " +
-                        update.getMessage().getFrom().toString();
-                break;
-            case("/birthday"):
-                reply = "I'm sorry, this functionality is not available yet :(";
-                break;
-            default:
-                reply = message;
+        String reply = null;
+
+        if (!isWaitingForRightAnswer) {
+            switch(message.toLowerCase().trim()) {
+                case ("/start"):
+                case ("/hello"):
+                    String userName = update.getMessage().getFrom().getUserName();
+                    reply = "Hello, " + userName + "!\n"
+                        + "List of available commands:\n"
+                        + "/info - get info that is available about you\n"
+                        + "/birthday - if you want to set your birthday";
+                    break;
+                case ("/info"):
+                    reply = "Here is what I know about you: " +
+                            update.getMessage().getFrom().toString();
+                    break;
+                case("/birthday"):
+                    reply = "Please, enter your birthday in following format: DD-MM-YYYY";
+                    isWaitingForRightAnswer = true;
+                    break;
+                default:
+                    reply = message;
+            }
+        } else {
+            log.info("Start retrieving birthDate from user...");
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+            try {
+                Date birthDate = simpleDateFormat.parse(update.getMessage().getText());
+                UserService.updateBirthDate(update, birthDate);
+                isWaitingForRightAnswer = false;
+                reply = "Date has been successfully entered";
+                log.info("birthDate has been successfully retrieved");
+            } catch (ParseException e) {
+                log.info("user entered invalid date");
+                reply = "Couldn't recognize date, please, try again";
+            }
         }
 
         sendMsg(update.getMessage().getChatId().toString(), reply);
