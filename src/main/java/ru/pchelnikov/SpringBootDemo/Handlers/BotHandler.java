@@ -6,6 +6,8 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import ru.pchelnikov.SpringBootDemo.Services.UserService;
@@ -13,6 +15,7 @@ import ru.pchelnikov.SpringBootDemo.Services.UserService;
 import javax.annotation.PostConstruct;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 @Slf4j
@@ -26,7 +29,7 @@ public class BotHandler extends TelegramLongPollingBot {
 //    private static String BOT_NAME;
     private static final String BOT_NAME = "pchel_test_bot";
     private boolean isWaitingForRightAnswer = false;
-
+    private ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
 
     /**
      * method for receiving messages
@@ -93,11 +96,35 @@ public class BotHandler extends TelegramLongPollingBot {
         sendMessage.enableMarkdown(true);
         sendMessage.setChatId(chatId);
         sendMessage.setText(s);
+        setupKeyboard();
+        sendMessage.setReplyMarkup(replyKeyboardMarkup);
         try {
             execute(sendMessage);
         } catch (TelegramApiException e) {
             log.error("TelegramApiException has erupted: ", e);
         }
+    }
+
+    /**
+     * setups keyboard with most needed commands
+     */
+    private void setupKeyboard() {
+        ArrayList<KeyboardRow> keyboard = new ArrayList<>();
+        KeyboardRow keyboardFirstRow = new KeyboardRow();
+        KeyboardRow keyboardSecondRow = new KeyboardRow();
+
+        keyboardFirstRow.add("/birthday");
+        keyboardSecondRow.add("/help");
+        keyboardSecondRow.add("/info");
+
+        keyboard.clear();
+        keyboard.add(keyboardFirstRow);
+        keyboard.add(keyboardSecondRow);
+
+        replyKeyboardMarkup.setSelective(true);
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        replyKeyboardMarkup.setOneTimeKeyboard(false);
+        replyKeyboardMarkup.setKeyboard(keyboard);
     }
 
     /**
