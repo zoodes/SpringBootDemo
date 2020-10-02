@@ -25,7 +25,8 @@ public class BotHandler extends TelegramLongPollingBot {
 //    @Value("${bot.name}")
 //    private static String BOT_NAME;
     private static final String BOT_NAME = "pchel_test_bot";
-    private static boolean isWaitingForRightAnswer = false;
+    private boolean isWaitingForRightAnswer = false;
+
 
     /**
      * method for receiving messages
