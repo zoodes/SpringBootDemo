@@ -82,8 +82,6 @@ public class BotHandler extends TelegramLongPollingBot {
 
         sendMsg(update.getMessage().getChatId().toString(), reply);
         log.info("The reply was sent back to user");
-
-
     }
 
     /**
@@ -156,4 +154,3 @@ public class BotHandler extends TelegramLongPollingBot {
         }
     }
 }
-
