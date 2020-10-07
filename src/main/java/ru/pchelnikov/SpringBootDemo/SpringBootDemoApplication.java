@@ -10,8 +10,6 @@ import org.telegram.telegrambots.ApiContextInitializer;
 public class SpringBootDemoApplication {
 
 	public static void main(String[] args) {
-//		log.info("Trying to bypass proxy, if it exists");
-//		ProxyHandler.bypassProxy();
 
 		log.info("Initializing TelegramBot");
 		ApiContextInitializer.init();
