@@ -52,6 +52,11 @@ public class UserService {
         return USER_MAP.containsKey(chatId);
     }
 
+    /**
+     * returns user with needed chatId
+     * @param chatId - chatId of user
+     * @return user with needed chatId
+     */
     public static User getUser(Long chatId) {
         return USER_MAP.get(chatId);
     }
