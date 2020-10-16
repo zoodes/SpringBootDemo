@@ -1,7 +1,7 @@
-package ru.pchelnikov.SpringBootDemo.Handlers;
+package ru.pchelnikov.SpringBootDemo.TelegramHandlers;
 
 import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.pchelnikov.SpringBootDemo.Services.User;
+import ru.pchelnikov.SpringBootDemo.Entities.User;
 import ru.pchelnikov.SpringBootDemo.Services.UserService;
 
 public class ReplyHandler {

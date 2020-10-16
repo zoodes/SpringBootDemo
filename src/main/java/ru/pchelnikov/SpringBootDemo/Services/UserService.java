@@ -2,7 +2,8 @@ package ru.pchelnikov.SpringBootDemo.Services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import java.util.ArrayList;
+import ru.pchelnikov.SpringBootDemo.Entities.User;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
