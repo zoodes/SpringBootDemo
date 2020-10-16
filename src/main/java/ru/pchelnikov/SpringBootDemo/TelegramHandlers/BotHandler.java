@@ -1,6 +1,9 @@
 package ru.pchelnikov.SpringBootDemo.TelegramHandlers;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -23,21 +26,36 @@ import java.util.Date;
 @Slf4j
 @Component
 public class BotHandler extends TelegramLongPollingBot {
-//    @Value("${bot.token}")
-//    private static String TOKEN;
-    private static final String TOKEN = "1273448729:AAEsX77rwpBf-i1iYFLkbvOFctnUEVsY6vc";
+    @Value("${bot.token}")
+    private String TOKEN;
+    @Value("${bot.name}")
+    private String BOT_NAME;
+    @Autowired
+    private ApplicationContext context;
 
-//    @Value("${bot.name}")
-//    private static String BOT_NAME;
-    private static final String BOT_NAME = "pchel_test_bot";
     private boolean isWaitingForRightAnswer = false;
     private ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
     private IUserService userService = new UserService();
 
-    /**
-     * method for receiving messages
-     * @param update contains message from user
-     */
+    public String getBotUsername() {
+        return BOT_NAME;
+    }
+
+    public String getBotToken() {
+        return TOKEN;
+    }
+
+    @PostConstruct
+    public void startBot() {
+        log.info("Launching TelegramBot");
+        TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
+        try {
+            telegramBotsApi.registerBot(context.getBean(BotHandler.class));
+        } catch (TelegramApiRequestException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void onUpdateReceived(Update update) {
         String message = update.getMessage().getText();
@@ -134,25 +152,5 @@ public class BotHandler extends TelegramLongPollingBot {
     }
 
 
-    public String getBotUsername() {
-        return BOT_NAME;
-    }
 
-
-    public String getBotToken() {
-        return TOKEN;
-    }
-
-    @PostConstruct
-    public static void startBot() {
-        log.info("Launching TelegramBot");
-        log.info("Bot name used: {}", BOT_NAME);
-        log.info("Token used: {}", TOKEN);
-        TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
-        try {
-            telegramBotsApi.registerBot(new BotHandler());
-        } catch (TelegramApiRequestException e) {
-            e.printStackTrace();
-        }
-    }
 }
