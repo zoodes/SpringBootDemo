@@ -5,6 +5,8 @@ import ru.pchelnikov.SpringBootDemo.Entities.User;
 import ru.pchelnikov.SpringBootDemo.Services.UserService;
 
 public class ReplyHandler {
+    private static UserService userService = new UserService();
+
     public static String startReply(Update update) {
         String userName = update.getMessage().getFrom().getUserName();
         return "Hello, " + userName + "!\n" + ReplyHandler.helpReply();
@@ -19,7 +21,7 @@ public class ReplyHandler {
     }
 
     public static String infoReply(Update update) {
-        User user = UserService.getUser(update.getMessage().getChatId());
+        User user = userService.getUser(update.getMessage().getChatId());
         return "Here is what I know about you:\n"
                 + "userName: " + user.getUserName() + ",\n"
                 + "chatId: " + user.getChatId() + ",\n"

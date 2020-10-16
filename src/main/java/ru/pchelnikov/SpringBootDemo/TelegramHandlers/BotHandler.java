@@ -10,6 +10,8 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMar
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
+import ru.pchelnikov.SpringBootDemo.DTOs.UserDTO;
+import ru.pchelnikov.SpringBootDemo.Services.IUserService;
 import ru.pchelnikov.SpringBootDemo.Services.UserService;
 
 import javax.annotation.PostConstruct;
@@ -30,6 +32,7 @@ public class BotHandler extends TelegramLongPollingBot {
     private static final String BOT_NAME = "pchel_test_bot";
     private boolean isWaitingForRightAnswer = false;
     private ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+    private IUserService userService = new UserService();
 
     /**
      * method for receiving messages
@@ -40,8 +43,10 @@ public class BotHandler extends TelegramLongPollingBot {
         String message = update.getMessage().getText();
         log.info("New message received: {}", update.getMessage().toString());
 
-        if (!UserService.hasUser(update.getMessage().getChatId())) {
-            UserService.createUser(update);
+        Long chatId = update.getMessage().getChatId();
+        if (!userService.hasUser(chatId)) {
+            UserDTO userDTO = createUserDTOFromUpdate(update);
+            userService.createUser(userDTO);
         }
 
         String reply;
@@ -70,7 +75,9 @@ public class BotHandler extends TelegramLongPollingBot {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
             try {
                 Date birthDate = simpleDateFormat.parse(update.getMessage().getText());
-                UserService.updateBirthDate(update, birthDate);
+                UserDTO userDTO = createUserDTOFromUpdate(update);
+                userDTO.birthDate = birthDate;
+                userService.updateUser(userDTO);
                 isWaitingForRightAnswer = false;
                 reply = "Date has been successfully entered";
                 log.info("birthDate has been successfully retrieved");
@@ -84,11 +91,15 @@ public class BotHandler extends TelegramLongPollingBot {
         log.info("The reply was sent back to user");
     }
 
-    /**
-     * Method for configuting and sending of message.
-     * @param chatId id of chat
-     * @param s string, which will be sent as a message
-     */
+    private static UserDTO createUserDTOFromUpdate(Update update) {
+        UserDTO userDTO = new UserDTO();
+        userDTO.chatId = update.getMessage().getChatId();
+        userDTO.userName = update.getMessage().getFrom().getUserName();
+        userDTO.firstName = update.getMessage().getFrom().getFirstName();
+        userDTO.lastName = update.getMessage().getFrom().getLastName();
+        return userDTO;
+    }
+
     public synchronized void sendMsg(String chatId, String s) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.enableMarkdown(true);
@@ -103,9 +114,6 @@ public class BotHandler extends TelegramLongPollingBot {
         }
     }
 
-    /**
-     * setups keyboard with most needed commands
-     */
     private void setupKeyboard() {
         ArrayList<KeyboardRow> keyboard = new ArrayList<>();
         KeyboardRow keyboardFirstRow = new KeyboardRow();
@@ -125,18 +133,12 @@ public class BotHandler extends TelegramLongPollingBot {
         replyKeyboardMarkup.setKeyboard(keyboard);
     }
 
-    /**
-     * Method returns bot name, entered during registration
-     * @return bot name
-     */
+
     public String getBotUsername() {
         return BOT_NAME;
     }
 
-    /**
-     * Method returns bot token from TG servers
-     * @return bot token
-     */
+
     public String getBotToken() {
         return TOKEN;
     }
