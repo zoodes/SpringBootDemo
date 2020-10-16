@@ -24,6 +24,8 @@ public class ReplyHandler {
         User user = userService.getUser(update.getMessage().getChatId());
         return "Here is what I know about you:\n"
                 + "userName: " + user.getUserName() + ",\n"
+                + "firstName: " + user.getFirstName() + ",\n"
+                + "lastName: " + user.getLastName() + ",\n"
                 + "chatId: " + user.getChatId() + ",\n"
                 + "birthDate: " + user.getBirthDate() + ".";
     }
