@@ -1,21 +1,17 @@
 package ru.pchelnikov.SpringBootDemo.Services;
 
 import lombok.extern.slf4j.Slf4j;
-import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.pchelnikov.SpringBootDemo.DTOs.UserDTO;
 import ru.pchelnikov.SpringBootDemo.Entities.User;
 import ru.pchelnikov.SpringBootDemo.Repositories.IUserDAO;
 import ru.pchelnikov.SpringBootDemo.Repositories.UserDAO;
 
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 public class UserService implements IUserService {
 
-    private static IUserDAO userDB = new UserDAO();
+    private static final IUserDAO userDB = new UserDAO();
 
     @Override
     public void createUser(UserDTO userDTO) {
@@ -32,11 +28,14 @@ public class UserService implements IUserService {
     public void updateUser(UserDTO userDTO) {
         User user = getUserFromUserDTO(userDTO);
         userDB.update(user);
+        log.info("User {} has been updated!", user.getUserName());
     }
 
     @Override
     public void deleteUser(Long chatId) {
+        User user = userDB.read(chatId);
         userDB.delete(chatId);
+        log.info("User {} has been deleted!", user.getUserName());
     }
 
     @Override
