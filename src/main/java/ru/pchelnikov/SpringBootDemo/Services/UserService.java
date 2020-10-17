@@ -22,6 +22,7 @@ public class UserService implements IUserService {
         } else {
             log.warn("userList already contains user {}!", user.getUserName());
         }
+        log.info("Userlist now contains: {}", getAllUsers());
     }
 
     @Override
@@ -29,6 +30,7 @@ public class UserService implements IUserService {
         User user = getUserFromUserDTO(userDTO);
         userDB.update(user);
         log.info("User {} has been updated!", user.getUserName());
+        log.info("Userlist now contains: {}", getAllUsers());
     }
 
     @Override
@@ -51,7 +53,7 @@ public class UserService implements IUserService {
 
     @Override
     public List<User> getAllUsers() {
-        return null;
+        return userDB.getAllUsers();
     }
 
 

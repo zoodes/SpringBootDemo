@@ -2,6 +2,7 @@ package ru.pchelnikov.SpringBootDemo.Repositories;
 
 import ru.pchelnikov.SpringBootDemo.Entities.User;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +37,7 @@ public class UserDAO implements IUserDAO {
 
     @Override
     public List<User> getAllUsers() {
-        return (List<User>) CHAT_ID_TO_USER.values();
+        return new ArrayList<User>(CHAT_ID_TO_USER.values());
     }
 
 }

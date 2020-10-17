@@ -32,7 +32,7 @@ public class BotHandler extends TelegramLongPollingBot {
     @Autowired
     private ApplicationContext context;
 
-    private boolean isWaitingForRightAnswer = false;
+    private boolean isWaitingForRightAnswer = false; //TODO: this should depend on user, not global!
     private final ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
     private final IUserService userService = new UserService();
 
