@@ -16,7 +16,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import ru.pchelnikov.SpringBootDemo.DTOs.UserDTO;
 import ru.pchelnikov.SpringBootDemo.Services.IUserService;
 import ru.pchelnikov.SpringBootDemo.Services.UserService;
-
 import javax.annotation.PostConstruct;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,8 +33,8 @@ public class BotHandler extends TelegramLongPollingBot {
     private ApplicationContext context;
 
     private boolean isWaitingForRightAnswer = false;
-    private ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
-    private IUserService userService = new UserService();
+    private final ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+    private final IUserService userService = new UserService();
 
     public String getBotUsername() {
         return BOT_NAME;
@@ -58,55 +57,75 @@ public class BotHandler extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        String message = update.getMessage().getText();
         log.info("New message received: {}", update.getMessage().toString());
+        createUserIfNotExists(update);
+        String reply = prepareReply(update);
+        sendReply(update, reply);
+        log.info("The reply was sent back to user");
+    }
 
+    private String prepareReply(Update update) {
+        String reply;
+        if (!isWaitingForRightAnswer) {
+            reply = replyToExecuteUserCommand(update);
+        } else {
+            reply = replyToGetBirthdayFromUser(update);
+        }
+        return reply;
+    }
+
+    private String replyToGetBirthdayFromUser(Update update) {
+        String reply;
+        try {
+            tryToParseBirthdateFromUserMessage(update);
+            reply = "Date has been successfully entered";
+            log.info("birthDate has been successfully retrieved");
+        } catch (ParseException e) {
+            log.info("user entered invalid date");
+            reply = "Couldn't recognize date, please, try again";
+        }
+        return reply;
+    }
+
+    private void tryToParseBirthdateFromUserMessage(Update update) throws ParseException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        Date birthDate = simpleDateFormat.parse(update.getMessage().getText());
+        UserDTO userDTO = createUserDTOFromUpdate(update);
+        userDTO.birthDate = birthDate;
+        userService.updateUser(userDTO);
+        isWaitingForRightAnswer = false;
+    }
+
+    private String replyToExecuteUserCommand(Update update) {
+        String reply;
+        String message = update.getMessage().getText();
+        switch(message.toLowerCase().trim()) {
+            case ("/start"):
+            case ("/hello"):
+                reply = ReplyHandler.startReply(update);
+                break;
+            case ("/help"):
+                reply = ReplyHandler.helpReply();
+                break;
+            case ("/info"):
+                reply = ReplyHandler.infoReply(update);
+                break;
+            case("/birthday"):
+                reply = ReplyHandler.birthdayReply();
+                isWaitingForRightAnswer = true;
+                break;
+            default:
+                reply = message;
+        }
+        return reply;
+    }
+
+    private void createUserIfNotExists(Update update) {
         Long chatId = update.getMessage().getChatId();
         if (!userService.hasUser(chatId)) {
             UserDTO userDTO = createUserDTOFromUpdate(update);
             userService.createUser(userDTO);
         }
-
-        String reply;
-
-        if (!isWaitingForRightAnswer) {
-            switch(message.toLowerCase().trim()) {
-                case ("/start"):
-                case ("/hello"):
-                    reply = ReplyHandler.startReply(update);
-                    break;
-                case ("/help"):
-                    reply = ReplyHandler.helpReply();
-                    break;
-                case ("/info"):
-                    reply = ReplyHandler.infoReply(update);
-                    break;
-                case("/birthday"):
-                    reply = ReplyHandler.birthdayReply();
-                    isWaitingForRightAnswer = true;
-                    break;
-                default:
-                    reply = message;
-            }
-        } else {
-            log.info("Start retrieving birthDate from user...");
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
-            try {
-                Date birthDate = simpleDateFormat.parse(update.getMessage().getText());
-                UserDTO userDTO = createUserDTOFromUpdate(update);
-                userDTO.birthDate = birthDate;
-                userService.updateUser(userDTO);
-                isWaitingForRightAnswer = false;
-                reply = "Date has been successfully entered";
-                log.info("birthDate has been successfully retrieved");
-            } catch (ParseException e) {
-                log.info("user entered invalid date");
-                reply = "Couldn't recognize date, please, try again";
-            }
-        }
-
-        sendMsg(update.getMessage().getChatId().toString(), reply);
-        log.info("The reply was sent back to user");
     }
 
     private static UserDTO createUserDTOFromUpdate(Update update) {
@@ -118,13 +137,19 @@ public class BotHandler extends TelegramLongPollingBot {
         return userDTO;
     }
 
-    public synchronized void sendMsg(String chatId, String s) {
+    public SendMessage getAndSetupSendMessage(Update update, String replyText) {
+        String chatId = update.getMessage().getChatId().toString();
         SendMessage sendMessage = new SendMessage();
         sendMessage.enableMarkdown(true);
         sendMessage.setChatId(chatId);
-        sendMessage.setText(s);
-        setupKeyboard();
+        sendMessage.setText(replyText);
         sendMessage.setReplyMarkup(replyKeyboardMarkup);
+        return sendMessage;
+    }
+
+    public synchronized void sendReply(Update update, String replyText) {
+        setupKeyboard();
+        SendMessage sendMessage = getAndSetupSendMessage(update, replyText);
         try {
             execute(sendMessage);
         } catch (TelegramApiException e) {
@@ -141,7 +166,6 @@ public class BotHandler extends TelegramLongPollingBot {
         keyboardSecondRow.add("/help");
         keyboardSecondRow.add("/info");
 
-        keyboard.clear();
         keyboard.add(keyboardFirstRow);
         keyboard.add(keyboardSecondRow);
 
@@ -150,7 +174,4 @@ public class BotHandler extends TelegramLongPollingBot {
         replyKeyboardMarkup.setOneTimeKeyboard(false);
         replyKeyboardMarkup.setKeyboard(keyboard);
     }
-
-
-
 }
