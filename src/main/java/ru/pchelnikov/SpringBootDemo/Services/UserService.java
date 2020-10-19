@@ -1,6 +1,7 @@
 package ru.pchelnikov.SpringBootDemo.Services;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import ru.pchelnikov.SpringBootDemo.DTOs.UserDTO;
 import ru.pchelnikov.SpringBootDemo.Entities.User;
 import ru.pchelnikov.SpringBootDemo.Repositories.IUserDAO;
@@ -9,6 +10,7 @@ import ru.pchelnikov.SpringBootDemo.Repositories.UserDAO;
 import java.util.List;
 
 @Slf4j
+@Service
 public class UserService implements IUserService {
 
     private static final IUserDAO userDB = new UserDAO();

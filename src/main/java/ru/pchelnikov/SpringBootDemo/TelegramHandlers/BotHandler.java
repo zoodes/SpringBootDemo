@@ -3,7 +3,6 @@ package ru.pchelnikov.SpringBootDemo.TelegramHandlers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -13,9 +12,9 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMar
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
+import org.telegram.telegrambots.meta.generics.LongPollingBot;
 import ru.pchelnikov.SpringBootDemo.DTOs.UserDTO;
 import ru.pchelnikov.SpringBootDemo.Services.IUserService;
-import ru.pchelnikov.SpringBootDemo.Services.UserService;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 
@@ -29,10 +28,11 @@ public class BotHandler extends TelegramLongPollingBot {
     @Value("${bot.name}")
     private String BOT_NAME;
     @Autowired
-    private ApplicationContext context;
+    private IUserService userService;
+    @Autowired
+    private LongPollingBot botHandler;
 
     private final ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
-    private final IUserService userService = new UserService();
 
     public String getBotUsername() {
         return BOT_NAME;
@@ -47,7 +47,7 @@ public class BotHandler extends TelegramLongPollingBot {
         log.info("Launching TelegramBot");
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
         try {
-            telegramBotsApi.registerBot(context.getBean(BotHandler.class));
+            telegramBotsApi.registerBot(botHandler);
         } catch (TelegramApiRequestException e) {
             e.printStackTrace();
         }
