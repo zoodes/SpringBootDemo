@@ -34,7 +34,7 @@ public class BotHandler extends TelegramLongPollingBot {
     @Autowired
     private ApplicationContext context;
 
-    private final Map<Long, Boolean> isWaitingForRightAnswer = new HashMap<>();
+    private final Map<Long, Boolean> isChatIdInEditBirthdayMode = new HashMap<>();
     private final ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
     private final IUserService userService = new UserService();
 
@@ -68,8 +68,8 @@ public class BotHandler extends TelegramLongPollingBot {
 
     private String prepareReply(Update update) {
         String reply;
-        Long chatId = update.getMessage().getChatId();
-        if (!isWaitingForRightAnswer.get(chatId)) {
+        Long chatId = getChatId(update);
+        if (!isChatIdInEditBirthdayMode.get(chatId)) {
             reply = replyToExecuteUserCommand(update);
         } else {
             reply = replyToGetBirthdayFromUser(update);
@@ -80,7 +80,7 @@ public class BotHandler extends TelegramLongPollingBot {
     private String replyToGetBirthdayFromUser(Update update) {
         String reply;
         try {
-            tryToParseBirthdateFromUserMessage(update);
+            parseBirthdateFromUserMessage(update);
             reply = "Date has been successfully entered";
             log.info("birthDate has been successfully retrieved");
         } catch (ParseException e) {
@@ -90,15 +90,15 @@ public class BotHandler extends TelegramLongPollingBot {
         return reply;
     }
 
-    private void tryToParseBirthdateFromUserMessage(Update update) throws ParseException {
+    private void parseBirthdateFromUserMessage(Update update) throws ParseException {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        Date birthDate = simpleDateFormat.parse(update.getMessage().getText());
+        Date birthDate = simpleDateFormat.parse(update.getMessage().getText().trim());
         UserDTO userDTO = createUserDTOFromUpdate(update);
         userDTO.birthDate = birthDate;
         userService.updateUser(userDTO);
 
-        Long chatId = update.getMessage().getChatId();
-        isWaitingForRightAnswer.put(chatId, false);
+        Long chatId = getChatId(update);
+        isChatIdInEditBirthdayMode.put(chatId, false);
     }
 
     private String replyToExecuteUserCommand(Update update) {
@@ -117,8 +117,8 @@ public class BotHandler extends TelegramLongPollingBot {
                 break;
             case("/birthday"):
                 reply = ReplyHandler.birthdayReply();
-                Long chatId = update.getMessage().getChatId();
-                isWaitingForRightAnswer.put(chatId, true);
+                Long chatId = getChatId(update);
+                isChatIdInEditBirthdayMode.put(chatId, true);
                 break;
             default:
                 reply = message;
@@ -127,9 +127,9 @@ public class BotHandler extends TelegramLongPollingBot {
     }
 
     private void createUserIfNotExists(Update update) {
-        Long chatId = update.getMessage().getChatId();
+        Long chatId = getChatId(update);
         if (!userService.hasUser(chatId)) {
-            isWaitingForRightAnswer.put(chatId, false);
+            isChatIdInEditBirthdayMode.put(chatId, false);
             UserDTO userDTO = createUserDTOFromUpdate(update);
             userService.createUser(userDTO);
         }
@@ -137,7 +137,7 @@ public class BotHandler extends TelegramLongPollingBot {
 
     private static UserDTO createUserDTOFromUpdate(Update update) {
         UserDTO userDTO = new UserDTO();
-        userDTO.chatId = update.getMessage().getChatId();
+        userDTO.chatId = getChatId(update);
         userDTO.userName = update.getMessage().getFrom().getUserName();
         userDTO.firstName = update.getMessage().getFrom().getFirstName();
         userDTO.lastName = update.getMessage().getFrom().getLastName();
@@ -145,7 +145,7 @@ public class BotHandler extends TelegramLongPollingBot {
     }
 
     public SendMessage getAndSetupSendMessage(Update update, String replyText) {
-        String chatId = update.getMessage().getChatId().toString();
+        Long chatId = getChatId(update);
         SendMessage sendMessage = new SendMessage();
         sendMessage.enableMarkdown(true);
         sendMessage.setChatId(chatId);
@@ -180,5 +180,10 @@ public class BotHandler extends TelegramLongPollingBot {
         replyKeyboardMarkup.setResizeKeyboard(true);
         replyKeyboardMarkup.setOneTimeKeyboard(false);
         replyKeyboardMarkup.setKeyboard(keyboard);
+    }
+
+
+    private static Long getChatId(Update update) {
+        return update.getMessage().getChatId();
     }
 }
