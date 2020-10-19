@@ -27,12 +27,13 @@ public class BotHandler extends TelegramLongPollingBot {
     private String TOKEN;
     @Value("${bot.name}")
     private String BOT_NAME;
-    @Autowired
     private IUserService userService;
-    @Autowired
-    private LongPollingBot botHandler;
 
     private final ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+
+    public BotHandler(IUserService userService) {
+        this.userService = userService;
+    }
 
     public String getBotUsername() {
         return BOT_NAME;
@@ -40,17 +41,6 @@ public class BotHandler extends TelegramLongPollingBot {
 
     public String getBotToken() {
         return TOKEN;
-    }
-
-    @PostConstruct
-    public void startBot() {
-        log.info("Launching TelegramBot");
-        TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
-        try {
-            telegramBotsApi.registerBot(botHandler);
-        } catch (TelegramApiRequestException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override

@@ -1,4 +1,4 @@
-package ru.pchelnikov.SpringBootDemo.Services;
+package ru.pchelnikov.SpringBootDemo.Services.Impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -6,6 +6,7 @@ import ru.pchelnikov.SpringBootDemo.DTOs.UserDTO;
 import ru.pchelnikov.SpringBootDemo.Entities.User;
 import ru.pchelnikov.SpringBootDemo.Repositories.IUserDAO;
 import ru.pchelnikov.SpringBootDemo.Repositories.UserDAO;
+import ru.pchelnikov.SpringBootDemo.Services.IUserService;
 
 import java.util.List;
 

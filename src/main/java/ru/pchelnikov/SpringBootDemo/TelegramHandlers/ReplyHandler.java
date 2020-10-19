@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.pchelnikov.SpringBootDemo.DTOs.UserDTO;
 import ru.pchelnikov.SpringBootDemo.Entities.User;
-import ru.pchelnikov.SpringBootDemo.Services.UserService;
+import ru.pchelnikov.SpringBootDemo.Services.Impl.UserService;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
