@@ -15,8 +15,6 @@ public class SpringBootDemoApplication {
 
 		log.info("Starting the SpringBoot application");
 		SpringApplication.run(SpringBootDemoApplication.class, args);
-
-		//TODO: make dependency injections via Spring on whole code
 	}
 
 }

@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import ru.pchelnikov.SpringBootDemo.DTOs.UserDTO;
 import ru.pchelnikov.SpringBootDemo.Entities.User;
 import ru.pchelnikov.SpringBootDemo.Repositories.IUserDAO;
-import ru.pchelnikov.SpringBootDemo.Repositories.UserDAO;
 import ru.pchelnikov.SpringBootDemo.Services.IUserService;
 
 import java.util.List;
@@ -14,7 +13,11 @@ import java.util.List;
 @Service
 public class UserService implements IUserService {
 
-    private static final IUserDAO userDB = new UserDAO();
+    private final IUserDAO userDB;
+
+    public UserService(IUserDAO userDB) {
+        this.userDB = userDB;
+    }
 
     @Override
     public void createUser(UserDTO userDTO) {
@@ -60,14 +63,13 @@ public class UserService implements IUserService {
     }
 
 
-    private static User getUserFromUserDTO(UserDTO userDTO) {
-        User user = new User().builder()
+    private User getUserFromUserDTO(UserDTO userDTO) {
+        return new User().builder()
                 .chatId(userDTO.chatId)
                 .userName(userDTO.userName)
                 .firstName(userDTO.firstName)
                 .lastName(userDTO.lastName)
                 .birthDate(userDTO.birthDate)
                 .build();
-        return user;
     }
 }

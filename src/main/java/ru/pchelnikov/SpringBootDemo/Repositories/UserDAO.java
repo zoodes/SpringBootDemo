@@ -1,5 +1,6 @@
 package ru.pchelnikov.SpringBootDemo.Repositories;
 
+import org.springframework.stereotype.Repository;
 import ru.pchelnikov.SpringBootDemo.Entities.User;
 
 import java.util.ArrayList;
@@ -7,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Repository
 public class UserDAO implements IUserDAO {
     private static final Map<Long, User> CHAT_ID_TO_USER = new HashMap<>();
 
@@ -37,7 +39,7 @@ public class UserDAO implements IUserDAO {
 
     @Override
     public List<User> getAllUsers() {
-        return new ArrayList<User>(CHAT_ID_TO_USER.values());
+        return new ArrayList<>(CHAT_ID_TO_USER.values());
     }
 
 }
