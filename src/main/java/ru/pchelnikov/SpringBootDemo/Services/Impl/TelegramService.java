@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import ru.pchelnikov.SpringBootDemo.Services.ITelegramService;
-import ru.pchelnikov.SpringBootDemo.TelegramHandlers.BotHandler;
+import ru.pchelnikov.SpringBootDemo.TelegramHandlers.UpdateHandler;
 
 import javax.annotation.PostConstruct;
 
@@ -14,10 +14,10 @@ import javax.annotation.PostConstruct;
 public class TelegramService implements ITelegramService {
 
 
-    BotHandler botHandler;
+    UpdateHandler updateHandler;
 
-    public TelegramService(BotHandler botHandler) {
-        this.botHandler = botHandler;
+    public TelegramService(UpdateHandler updateHandler) {
+        this.updateHandler = updateHandler;
     }
 
     @Override
@@ -28,7 +28,7 @@ public class TelegramService implements ITelegramService {
         log.info("Launching TelegramBot");
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
         try {
-            telegramBotsApi.registerBot(botHandler);
+            telegramBotsApi.registerBot(updateHandler);
         } catch (TelegramApiRequestException e) {
             e.printStackTrace();
         }

@@ -1,37 +1,31 @@
 package ru.pchelnikov.SpringBootDemo.TelegramHandlers;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
-import org.telegram.telegrambots.meta.generics.LongPollingBot;
 import ru.pchelnikov.SpringBootDemo.DTOs.UserDTO;
 import ru.pchelnikov.SpringBootDemo.Services.IUserService;
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 
 import static ru.pchelnikov.SpringBootDemo.TelegramHandlers.UserDTOHandler.createUserDTOFromUpdate;
 
 @Slf4j
 @Component
-public class BotHandler extends TelegramLongPollingBot {
+public class UpdateHandler extends TelegramLongPollingBot {
     @Value("${bot.token}")
     private String TOKEN;
     @Value("${bot.name}")
     private String BOT_NAME;
-    private IUserService userService;
-
+    private final IUserService userService;
     private final ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
 
-    public BotHandler(IUserService userService) {
+    public UpdateHandler(IUserService userService) {
         this.userService = userService;
     }
 
