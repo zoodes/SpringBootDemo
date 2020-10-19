@@ -21,6 +21,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @Component
@@ -32,7 +34,7 @@ public class BotHandler extends TelegramLongPollingBot {
     @Autowired
     private ApplicationContext context;
 
-    private boolean isWaitingForRightAnswer = false; //TODO: this should depend on user, not global!
+    private final Map<Long, Boolean> isWaitingForRightAnswer = new HashMap<>();
     private final ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
     private final IUserService userService = new UserService();
 
@@ -66,7 +68,8 @@ public class BotHandler extends TelegramLongPollingBot {
 
     private String prepareReply(Update update) {
         String reply;
-        if (!isWaitingForRightAnswer) {
+        Long chatId = update.getMessage().getChatId();
+        if (!isWaitingForRightAnswer.get(chatId)) {
             reply = replyToExecuteUserCommand(update);
         } else {
             reply = replyToGetBirthdayFromUser(update);
@@ -93,7 +96,9 @@ public class BotHandler extends TelegramLongPollingBot {
         UserDTO userDTO = createUserDTOFromUpdate(update);
         userDTO.birthDate = birthDate;
         userService.updateUser(userDTO);
-        isWaitingForRightAnswer = false;
+
+        Long chatId = update.getMessage().getChatId();
+        isWaitingForRightAnswer.put(chatId, false);
     }
 
     private String replyToExecuteUserCommand(Update update) {
@@ -112,7 +117,8 @@ public class BotHandler extends TelegramLongPollingBot {
                 break;
             case("/birthday"):
                 reply = ReplyHandler.birthdayReply();
-                isWaitingForRightAnswer = true;
+                Long chatId = update.getMessage().getChatId();
+                isWaitingForRightAnswer.put(chatId, true);
                 break;
             default:
                 reply = message;
@@ -123,6 +129,7 @@ public class BotHandler extends TelegramLongPollingBot {
     private void createUserIfNotExists(Update update) {
         Long chatId = update.getMessage().getChatId();
         if (!userService.hasUser(chatId)) {
+            isWaitingForRightAnswer.put(chatId, false);
             UserDTO userDTO = createUserDTOFromUpdate(update);
             userService.createUser(userDTO);
         }
