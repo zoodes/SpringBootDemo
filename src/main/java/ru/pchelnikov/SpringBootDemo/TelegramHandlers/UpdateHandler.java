@@ -23,10 +23,12 @@ public class UpdateHandler extends TelegramLongPollingBot {
     @Value("${bot.name}")
     private String BOT_NAME;
     private final IUserService userService;
+    private final ReplyHandler replyHandler;
     private final ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
 
-    public UpdateHandler(IUserService userService) {
+    public UpdateHandler(IUserService userService, ReplyHandler replyHandler) {
         this.userService = userService;
+        this.replyHandler = replyHandler;
     }
 
     public String getBotUsername() {
@@ -41,7 +43,7 @@ public class UpdateHandler extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         log.info("New message received: {}", update.getMessage().toString());
         createUserIfNotExists(update);
-        String reply = ReplyHandler.prepareReply(update);
+        String reply = replyHandler.prepareReply(update);
         sendReply(update, reply);
         log.info("The reply was sent back to user");
     }
@@ -49,7 +51,7 @@ public class UpdateHandler extends TelegramLongPollingBot {
     private void createUserIfNotExists(Update update) {
         Long chatId = update.getMessage().getChatId();
         if (!userService.hasUser(chatId)) {
-            ReplyHandler.setIsChatIdInEditBirthdayMode(chatId, false);
+            replyHandler.setIsChatIdInEditBirthdayMode(chatId, false);
             UserDTO userDTO = createUserDTOFromUpdate(update);
             userService.createUser(userDTO);
         }

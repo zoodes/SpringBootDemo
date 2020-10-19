@@ -1,6 +1,7 @@
 package ru.pchelnikov.SpringBootDemo.TelegramHandlers;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.pchelnikov.SpringBootDemo.DTOs.UserDTO;
 import ru.pchelnikov.SpringBootDemo.Entities.User;
@@ -15,16 +16,21 @@ import java.util.Map;
 import static ru.pchelnikov.SpringBootDemo.TelegramHandlers.UserDTOHandler.createUserDTOFromUpdate;
 
 @Slf4j
+@Component
 public class ReplyHandler {
-    private static final UserService userService = new UserService();
-    private static final Map<Long, Boolean> isChatIdInEditBirthdayMode = new HashMap<>();
+    private final UserService userService;
+    private final Map<Long, Boolean> isChatIdInEditBirthdayMode = new HashMap<>();
 
-    public static String startReply(Update update) {
-        String userName = update.getMessage().getFrom().getUserName();
-        return "Hello, " + userName + "!\n" + ReplyHandler.helpReply();
+    public ReplyHandler(UserService userService) {
+        this.userService = userService;
     }
 
-    public static String helpReply() {
+    public String startReply(Update update) {
+        String userName = update.getMessage().getFrom().getUserName();
+        return "Hello, " + userName + "!\n" + this.helpReply();
+    }
+
+    public String helpReply() {
         return  "List of available commands:\n"
                 + "/start or /hello - start bot,\n"
                 + "/help - get help,\n"
@@ -32,7 +38,7 @@ public class ReplyHandler {
                 + "/birthday - if you want to set your birthday.";
     }
 
-    public static String infoReply(Update update) {
+    public String infoReply(Update update) {
         User user = userService.getUser(update.getMessage().getChatId());
         return "Here is what I know about you:\n"
                 + "userName: " + user.getUserName() + ",\n"
@@ -42,11 +48,11 @@ public class ReplyHandler {
                 + "birthDate: " + user.getBirthDate() + ".";
     }
 
-    public static String birthdayReply() {
+    public String birthdayReply() {
         return "Please, enter your birthday in following format: DD-MM-YYYY";
     }
 
-    public static String prepareReply(Update update) {
+    public String prepareReply(Update update) {
         String reply;
         Long chatId = getChatId(update);
         if (!isChatIdInEditBirthdayMode.get(chatId)) {
@@ -57,7 +63,7 @@ public class ReplyHandler {
         return reply;
     }
 
-    private static String replyToGetBirthdayFromUser(Update update) {
+    private String replyToGetBirthdayFromUser(Update update) {
         String reply;
         try {
             parseBirthdateFromUserMessage(update);
@@ -70,22 +76,22 @@ public class ReplyHandler {
         return reply;
     }
 
-    private static String replyToExecuteUserCommand(Update update) {
+    private String replyToExecuteUserCommand(Update update) {
         String reply;
         String message = update.getMessage().getText();
         switch(message.toLowerCase().trim()) {
             case ("/start"):
             case ("/hello"):
-                reply = ReplyHandler.startReply(update);
+                reply = this.startReply(update);
                 break;
             case ("/help"):
-                reply = ReplyHandler.helpReply();
+                reply = this.helpReply();
                 break;
             case ("/info"):
-                reply = ReplyHandler.infoReply(update);
+                reply = this.infoReply(update);
                 break;
             case("/birthday"):
-                reply = ReplyHandler.birthdayReply();
+                reply = this.birthdayReply();
                 Long chatId = getChatId(update);
                 isChatIdInEditBirthdayMode.put(chatId, true);
                 break;
@@ -95,7 +101,7 @@ public class ReplyHandler {
         return reply;
     }
 
-    private static void parseBirthdateFromUserMessage(Update update) throws ParseException {
+    private void parseBirthdateFromUserMessage(Update update) throws ParseException {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
         Date birthDate = simpleDateFormat.parse(update.getMessage().getText().trim());
         UserDTO userDTO = createUserDTOFromUpdate(update);
@@ -106,11 +112,11 @@ public class ReplyHandler {
         isChatIdInEditBirthdayMode.put(chatId, false);
     }
 
-    private static Long getChatId(Update update) {
+    private Long getChatId(Update update) {
         return update.getMessage().getChatId();
     }
 
-    public static void setIsChatIdInEditBirthdayMode(Long chatId, boolean b) {
+    public void setIsChatIdInEditBirthdayMode(Long chatId, boolean b) {
         isChatIdInEditBirthdayMode.put(chatId, b);
     }
 }

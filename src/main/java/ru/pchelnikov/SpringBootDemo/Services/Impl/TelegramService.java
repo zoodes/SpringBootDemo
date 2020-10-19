@@ -13,7 +13,6 @@ import javax.annotation.PostConstruct;
 @Slf4j
 public class TelegramService implements ITelegramService {
 
-
     UpdateHandler updateHandler;
 
     public TelegramService(UpdateHandler updateHandler) {
