@@ -64,7 +64,7 @@ public class UserService implements IUserService {
 
 
     private User getUserFromUserDTO(UserDTO userDTO) {
-        return new User().builder()
+        return User.builder()
                 .chatId(userDTO.chatId)
                 .userName(userDTO.userName)
                 .firstName(userDTO.firstName)
