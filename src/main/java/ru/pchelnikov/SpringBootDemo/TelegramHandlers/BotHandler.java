@@ -17,12 +17,9 @@ import ru.pchelnikov.SpringBootDemo.DTOs.UserDTO;
 import ru.pchelnikov.SpringBootDemo.Services.IUserService;
 import ru.pchelnikov.SpringBootDemo.Services.UserService;
 import javax.annotation.PostConstruct;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+
+import static ru.pchelnikov.SpringBootDemo.TelegramHandlers.UserDTOHandler.createUserDTOFromUpdate;
 
 @Slf4j
 @Component
@@ -34,7 +31,6 @@ public class BotHandler extends TelegramLongPollingBot {
     @Autowired
     private ApplicationContext context;
 
-    private final Map<Long, Boolean> isChatIdInEditBirthdayMode = new HashMap<>();
     private final ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
     private final IUserService userService = new UserService();
 
@@ -61,97 +57,18 @@ public class BotHandler extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         log.info("New message received: {}", update.getMessage().toString());
         createUserIfNotExists(update);
-        String reply = prepareReply(update);
+        String reply = ReplyHandler.prepareReply(update);
         sendReply(update, reply);
         log.info("The reply was sent back to user");
     }
 
-    private String prepareReply(Update update) {
-        String reply;
-        Long chatId = getChatId(update);
-        if (!isChatIdInEditBirthdayMode.get(chatId)) {
-            reply = replyToExecuteUserCommand(update);
-        } else {
-            reply = replyToGetBirthdayFromUser(update);
-        }
-        return reply;
-    }
-
-    private String replyToGetBirthdayFromUser(Update update) {
-        String reply;
-        try {
-            parseBirthdateFromUserMessage(update);
-            reply = "Date has been successfully entered";
-            log.info("birthDate has been successfully retrieved");
-        } catch (ParseException e) {
-            log.info("user entered invalid date");
-            reply = "Couldn't recognize date, please, try again";
-        }
-        return reply;
-    }
-
-    private void parseBirthdateFromUserMessage(Update update) throws ParseException {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        Date birthDate = simpleDateFormat.parse(update.getMessage().getText().trim());
-        UserDTO userDTO = createUserDTOFromUpdate(update);
-        userDTO.birthDate = birthDate;
-        userService.updateUser(userDTO);
-
-        Long chatId = getChatId(update);
-        isChatIdInEditBirthdayMode.put(chatId, false);
-    }
-
-    private String replyToExecuteUserCommand(Update update) {
-        String reply;
-        String message = update.getMessage().getText();
-        switch(message.toLowerCase().trim()) {
-            case ("/start"):
-            case ("/hello"):
-                reply = ReplyHandler.startReply(update);
-                break;
-            case ("/help"):
-                reply = ReplyHandler.helpReply();
-                break;
-            case ("/info"):
-                reply = ReplyHandler.infoReply(update);
-                break;
-            case("/birthday"):
-                reply = ReplyHandler.birthdayReply();
-                Long chatId = getChatId(update);
-                isChatIdInEditBirthdayMode.put(chatId, true);
-                break;
-            default:
-                reply = message;
-        }
-        return reply;
-    }
-
     private void createUserIfNotExists(Update update) {
-        Long chatId = getChatId(update);
+        Long chatId = update.getMessage().getChatId();
         if (!userService.hasUser(chatId)) {
-            isChatIdInEditBirthdayMode.put(chatId, false);
+            ReplyHandler.setIsChatIdInEditBirthdayMode(chatId, false);
             UserDTO userDTO = createUserDTOFromUpdate(update);
             userService.createUser(userDTO);
         }
-    }
-
-    private static UserDTO createUserDTOFromUpdate(Update update) {
-        UserDTO userDTO = new UserDTO();
-        userDTO.chatId = getChatId(update);
-        userDTO.userName = update.getMessage().getFrom().getUserName();
-        userDTO.firstName = update.getMessage().getFrom().getFirstName();
-        userDTO.lastName = update.getMessage().getFrom().getLastName();
-        return userDTO;
-    }
-
-    public SendMessage getAndSetupSendMessage(Update update, String replyText) {
-        Long chatId = getChatId(update);
-        SendMessage sendMessage = new SendMessage();
-        sendMessage.enableMarkdown(true);
-        sendMessage.setChatId(chatId);
-        sendMessage.setText(replyText);
-        sendMessage.setReplyMarkup(replyKeyboardMarkup);
-        return sendMessage;
     }
 
     public synchronized void sendReply(Update update, String replyText) {
@@ -162,6 +79,16 @@ public class BotHandler extends TelegramLongPollingBot {
         } catch (TelegramApiException e) {
             log.error("TelegramApiException has erupted: ", e);
         }
+    }
+
+    public SendMessage getAndSetupSendMessage(Update update, String replyText) {
+        Long chatId = update.getMessage().getChatId();
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.enableMarkdown(true);
+        sendMessage.setChatId(chatId);
+        sendMessage.setText(replyText);
+        sendMessage.setReplyMarkup(replyKeyboardMarkup);
+        return sendMessage;
     }
 
     private void setupKeyboard() {
@@ -180,10 +107,5 @@ public class BotHandler extends TelegramLongPollingBot {
         replyKeyboardMarkup.setResizeKeyboard(true);
         replyKeyboardMarkup.setOneTimeKeyboard(false);
         replyKeyboardMarkup.setKeyboard(keyboard);
-    }
-
-
-    private static Long getChatId(Update update) {
-        return update.getMessage().getChatId();
     }
 }
