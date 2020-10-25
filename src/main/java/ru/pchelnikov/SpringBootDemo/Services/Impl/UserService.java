@@ -45,15 +45,16 @@ public class UserService implements IUserService {
     public void deleteUser(Long chatId) {
         if (!userDB.hasUser(chatId)) throw UserNotFoundException.init(chatId);
         User user = userDB.read(chatId);
+        log.info("User {} is about to be deleted!", user.getUserName());
         userDB.delete(chatId);
-        log.info("User {} has been deleted!", user.getUserName());
+        log.info("Deletion complete!");
     }
 
     @Override
     public User getUser(Long chatId) {
+        if (!userDB.hasUser(chatId)) throw UserNotFoundException.init(chatId);
         return userDB.read(chatId);
     }
-
 
     @Override
     public boolean hasUser(Long chatId) {
@@ -64,7 +65,6 @@ public class UserService implements IUserService {
     public List<User> getAllUsers() {
         return userDB.getAllUsers();
     }
-
 
     private User getUserFromUserDTO(UserDTO userDTO) {
         return User.builder()
