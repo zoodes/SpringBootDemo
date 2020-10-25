@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.pchelnikov.SpringBootDemo.DTOs.UserDTO;
 import ru.pchelnikov.SpringBootDemo.Entities.User;
 import ru.pchelnikov.SpringBootDemo.Repositories.IUserDAO;
+import ru.pchelnikov.SpringBootDemo.Services.Exceptions.UserNotFoundException;
 import ru.pchelnikov.SpringBootDemo.Services.IUserService;
 
 import java.util.List;
@@ -34,6 +35,7 @@ public class UserService implements IUserService {
     @Override
     public void updateUser(UserDTO userDTO) {
         User user = getUserFromUserDTO(userDTO);
+        if (!userDB.hasUser(user.getChatId())) throw UserNotFoundException.init(user.getChatId());
         userDB.update(user);
         log.info("User {} has been updated!", user.getUserName());
         log.info("Userlist now contains: {}", getAllUsers());
@@ -41,6 +43,7 @@ public class UserService implements IUserService {
 
     @Override
     public void deleteUser(Long chatId) {
+        if (!userDB.hasUser(chatId)) throw UserNotFoundException.init(chatId);
         User user = userDB.read(chatId);
         userDB.delete(chatId);
         log.info("User {} has been deleted!", user.getUserName());
