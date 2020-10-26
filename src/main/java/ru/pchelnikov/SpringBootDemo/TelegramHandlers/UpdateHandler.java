@@ -41,11 +41,12 @@ public class UpdateHandler extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        log.info("New message received: {}", update.getMessage().toString());
+        Long chatId = update.getMessage().getChatId();
+        log.info("New message from user {} received: \"{}\"", chatId, update.getMessage().getText());
         createUserIfNotExists(update);
         String reply = replyHandler.prepareReply(update);
         sendReply(update, reply);
-        log.info("The reply was sent back to user");
+        log.info("The reply was sent back to user {}: \"{}\"", chatId, reply.replaceAll("[\\n\\r]", " "));
     }
 
     private void createUserIfNotExists(Update update) {
@@ -82,6 +83,7 @@ public class UpdateHandler extends TelegramLongPollingBot {
         KeyboardRow keyboardSecondRow = new KeyboardRow();
 
         keyboardFirstRow.add("/birthday");
+        keyboardFirstRow.add("/phone");
         keyboardSecondRow.add("/help");
         keyboardSecondRow.add("/info");
 

@@ -60,6 +60,7 @@ public class Controller {
         userDTO.firstName = user.getFirstName();
         userDTO.lastName = user.getLastName();
         userDTO.birthDate = user.getBirthDate();
+        userDTO.phone = user.getPhone();
         return userDTO;
     }
 

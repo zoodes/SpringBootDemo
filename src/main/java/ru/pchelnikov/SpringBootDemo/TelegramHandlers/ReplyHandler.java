@@ -35,7 +35,8 @@ public class ReplyHandler {
                 + "/start or /hello - start bot,\n"
                 + "/help - get help,\n"
                 + "/info - get info that is available about you,\n"
-                + "/birthday - if you want to set your birthday.";
+                + "/birthday - if you want to set your birthday, \n"
+                + "/phone - if you want to set your phone number.";
     }
 
     public String infoReply(Update update) {
@@ -45,11 +46,16 @@ public class ReplyHandler {
                 + "firstName: " + user.getFirstName() + ",\n"
                 + "lastName: " + user.getLastName() + ",\n"
                 + "chatId: " + user.getChatId() + ",\n"
-                + "birthDate: " + user.getBirthDate() + ".";
+                + "birthDate: " + user.getBirthDate() + "\n"
+                + "phone: " + user.getPhone() + ".";
     }
 
     public String birthdayReply() {
         return "Please, enter your birthday in following format: DD-MM-YYYY";
+    }
+
+    public String phoneReply() {
+        return "Please, enter your phone number";
     }
 
     public String prepareReply(Update update) {
@@ -62,9 +68,27 @@ public class ReplyHandler {
         switch (chatIdReplyMode.get(chatId)) {
             case EDIT_BIRTHDAY:
                 reply = replyToGetBirthdayFromUser(update);
+                break;
+            case EDIT_PHONE:
+                reply = replyToGetPhoneFromUser(update);
+                break;
             default:
                 reply = replyToExecuteUserCommand(update);
         }
+        return reply;
+    }
+
+    private String replyToGetPhoneFromUser(Update update) {
+        String phone = update.getMessage().getText().trim();
+        UserDTO userDTO = createUserDTOFromUpdate(update);
+        userDTO.phone = phone;
+        userService.updateUser(userDTO);
+
+        Long chatId = getChatId(update);
+        chatIdReplyMode.put(chatId, ReplyMode.DEFAULT);
+
+        String reply = "Phone number has been successfully entered";
+        log.info("Phone number has been successfully retrieved for user {}", update.getMessage().getChatId());
         return reply;
     }
 
@@ -73,9 +97,9 @@ public class ReplyHandler {
         try {
             parseBirthdateFromUserMessage(update);
             reply = "Date has been successfully entered";
-            log.info("birthDate has been successfully retrieved");
+            log.info("birthDate has been successfully retrieved for user {}", update.getMessage().getChatId());
         } catch (ParseException e) {
-            log.info("user entered invalid date");
+            log.info("user {} entered invalid date", update.getMessage().getChatId());
             reply = "Couldn't recognize date, please, try again";
         }
         return reply;
@@ -84,6 +108,7 @@ public class ReplyHandler {
     private String replyToExecuteUserCommand(Update update) {
         String reply;
         String message = update.getMessage().getText();
+        Long chatId = getChatId(update);
         switch(message.toLowerCase().trim()) {
             case ("/start"):
             case ("/hello"):
@@ -97,8 +122,11 @@ public class ReplyHandler {
                 break;
             case("/birthday"):
                 reply = this.birthdayReply();
-                Long chatId = getChatId(update);
                 chatIdReplyMode.put(chatId, ReplyMode.EDIT_BIRTHDAY);
+                break;
+            case("/phone"):
+                reply = this.phoneReply();
+                chatIdReplyMode.put(chatId, ReplyMode.EDIT_PHONE);
                 break;
             default:
                 reply = message;

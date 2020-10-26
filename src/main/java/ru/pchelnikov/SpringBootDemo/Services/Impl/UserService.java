@@ -25,19 +25,28 @@ public class UserService implements IUserService {
         User user = getUserFromUserDTO(userDTO);
         if (!userDB.hasUser(user.getChatId())) {
             userDB.create(user);
-            log.info("User {} has been added to userList!", user.getUserName());
+            log.info("User {} has been added to userList!", user.getChatId());
         } else {
-            log.warn("userList already contains user {}!", user.getUserName());
+            log.warn("userList already contains user {}!", user.getChatId());
         }
         log.info("Userlist now contains: {}", getAllUsers());
     }
 
+
     @Override
     public void updateUser(UserDTO userDTO) {
-        User user = getUserFromUserDTO(userDTO);
-        if (!userDB.hasUser(user.getChatId())) throw UserNotFoundException.init(user.getChatId());
-        userDB.update(user);
-        log.info("User {} has been updated!", user.getUserName());
+        if (!userDB.hasUser(userDTO.chatId)) throw UserNotFoundException.init(userDTO.chatId);
+        User oldUser = userDB.read(userDTO.chatId);
+        User newUser = User.builder()
+                .chatId(userDTO.chatId)
+                .userName(userDTO.userName != null ? userDTO.userName : oldUser.getUserName())
+                .firstName(userDTO.firstName != null ? userDTO.firstName : oldUser.getFirstName())
+                .lastName(userDTO.lastName != null ? userDTO.lastName : oldUser.getLastName())
+                .birthDate(userDTO.birthDate != null ? userDTO.birthDate : oldUser.getBirthDate())
+                .phone(userDTO.phone != null ? userDTO.phone : oldUser.getPhone())
+                .build();
+        userDB.update(newUser);
+        log.info("User {} has been updated!", newUser.getChatId());
         log.info("Userlist now contains: {}", getAllUsers());
     }
 
@@ -73,6 +82,7 @@ public class UserService implements IUserService {
                 .firstName(userDTO.firstName)
                 .lastName(userDTO.lastName)
                 .birthDate(userDTO.birthDate)
+                .phone(userDTO.phone)
                 .build();
     }
 }
