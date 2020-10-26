@@ -19,7 +19,7 @@ import static ru.pchelnikov.SpringBootDemo.TelegramHandlers.UserDTOHandler.creat
 @Component
 public class ReplyHandler {
     private final UserService userService;
-    private final Map<Long, Boolean> isChatIdInEditBirthdayMode = new HashMap<>();
+    private final Map<Long, ReplyMode> chatIdReplyMode = new HashMap<>();
 
     public ReplyHandler(UserService userService) {
         this.userService = userService;
@@ -55,10 +55,15 @@ public class ReplyHandler {
     public String prepareReply(Update update) {
         String reply;
         Long chatId = getChatId(update);
-        if (!isChatIdInEditBirthdayMode.get(chatId)) {
-            reply = replyToExecuteUserCommand(update);
-        } else {
-            reply = replyToGetBirthdayFromUser(update);
+        if (!chatIdReplyMode.containsKey(chatId)) {
+            chatIdReplyMode.put(chatId, ReplyMode.DEFAULT);
+        }
+
+        switch (chatIdReplyMode.get(chatId)) {
+            case EDIT_BIRTHDAY:
+                reply = replyToGetBirthdayFromUser(update);
+            default:
+                reply = replyToExecuteUserCommand(update);
         }
         return reply;
     }
@@ -93,7 +98,7 @@ public class ReplyHandler {
             case("/birthday"):
                 reply = this.birthdayReply();
                 Long chatId = getChatId(update);
-                isChatIdInEditBirthdayMode.put(chatId, true);
+                chatIdReplyMode.put(chatId, ReplyMode.EDIT_BIRTHDAY);
                 break;
             default:
                 reply = message;
@@ -109,14 +114,10 @@ public class ReplyHandler {
         userService.updateUser(userDTO);
 
         Long chatId = getChatId(update);
-        isChatIdInEditBirthdayMode.put(chatId, false);
+        chatIdReplyMode.put(chatId, ReplyMode.DEFAULT);
     }
 
     private Long getChatId(Update update) {
         return update.getMessage().getChatId();
-    }
-
-    public void setIsChatIdInEditBirthdayMode(Long chatId, boolean b) {
-        isChatIdInEditBirthdayMode.put(chatId, b);
     }
 }

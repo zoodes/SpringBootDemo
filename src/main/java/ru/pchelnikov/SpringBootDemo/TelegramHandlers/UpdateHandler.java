@@ -51,7 +51,6 @@ public class UpdateHandler extends TelegramLongPollingBot {
     private void createUserIfNotExists(Update update) {
         Long chatId = update.getMessage().getChatId();
         if (!userService.hasUser(chatId)) {
-            replyHandler.setIsChatIdInEditBirthdayMode(chatId, false);
             UserDTO userDTO = createUserDTOFromUpdate(update);
             userService.createUser(userDTO);
         }
