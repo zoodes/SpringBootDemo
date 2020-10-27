@@ -51,11 +51,11 @@ public class ReplyHandler {
     }
 
     public String birthdayReply() {
-        return "Please, enter your birthday in following format: DD-MM-YYYY";
+        return "Please, enter your birthday in following format: DD-MM-YYYY (you can change it later by sending /birthday command)";
     }
 
     public String phoneReply() {
-        return "Please, enter your phone number";
+        return "Please, enter your phone number (you can change it later by sending /phone command)";
     }
 
     public String prepareReply(Update update) {
@@ -64,7 +64,6 @@ public class ReplyHandler {
         if (!chatIdReplyMode.containsKey(chatId)) {
             chatIdReplyMode.put(chatId, ReplyMode.DEFAULT);
         }
-
         switch (chatIdReplyMode.get(chatId)) {
             case EDIT_BIRTHDAY:
                 reply = replyToGetBirthdayFromUser(update);
@@ -109,6 +108,11 @@ public class ReplyHandler {
         String reply;
         String message = update.getMessage().getText();
         Long chatId = getChatId(update);
+
+        if (userService.getUser(chatId).getPhone() == null) {
+            message = "/phone";
+        }
+
         switch(message.toLowerCase().trim()) {
             case ("/start"):
             case ("/hello"):
