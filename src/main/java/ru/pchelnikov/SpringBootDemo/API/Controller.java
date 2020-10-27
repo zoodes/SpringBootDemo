@@ -3,10 +3,7 @@ package ru.pchelnikov.SpringBootDemo.API;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.pchelnikov.SpringBootDemo.DTOs.UserDTO;
 import ru.pchelnikov.SpringBootDemo.Entities.User;
 import ru.pchelnikov.SpringBootDemo.Services.Exceptions.UserNotFoundException;
@@ -18,11 +15,12 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/users")
 public class Controller {
 
     private final IUserService service;
 
-    @GetMapping("/users")
+    @GetMapping
     HttpEntity<List<UserDTO>> getAllUsers() {
         List<User> users = service.getAllUsers();
         List<UserDTO> result = users.stream()
@@ -31,7 +29,7 @@ public class Controller {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/users/{phone}")
+    @GetMapping("/{phone}")
     HttpEntity<UserDTO> getUser(@PathVariable String phone) {
         User user;
         try {
@@ -43,7 +41,7 @@ public class Controller {
         return ResponseEntity.ok(result);
     }
 
-    @DeleteMapping("/users/{phone}")
+    @DeleteMapping("/{phone}")
     HttpEntity<String> deleteUser(@PathVariable String phone) {
         try {
             service.deleteUser(phone);
