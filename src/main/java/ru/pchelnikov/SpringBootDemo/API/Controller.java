@@ -1,6 +1,6 @@
 package ru.pchelnikov.SpringBootDemo.API;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class Controller {
 
     private final IUserService service;

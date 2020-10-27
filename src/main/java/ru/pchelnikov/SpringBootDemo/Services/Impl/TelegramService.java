@@ -1,5 +1,6 @@
 package ru.pchelnikov.SpringBootDemo.Services.Impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -11,13 +12,14 @@ import javax.annotation.PostConstruct;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class TelegramService implements ITelegramService {
 
-    UpdateHandler updateHandler;
+    private final UpdateHandler updateHandler;
 
-    public TelegramService(UpdateHandler updateHandler) {
-        this.updateHandler = updateHandler;
-    }
+//    public  TelegramService(UpdateHandler updateHandler) {
+//        this.updateHandler = updateHandler;
+//    }
 
     @Override
     @PostConstruct

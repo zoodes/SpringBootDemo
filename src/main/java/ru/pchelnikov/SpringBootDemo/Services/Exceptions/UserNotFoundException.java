@@ -2,7 +2,6 @@ package ru.pchelnikov.SpringBootDemo.Services.Exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import ru.pchelnikov.SpringBootDemo.Entities.User;
 
 @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "Not Found")
 public class UserNotFoundException extends UserServiceException {
