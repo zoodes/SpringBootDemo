@@ -8,13 +8,16 @@ import ru.pchelnikov.SpringBootDemo.Repositories.IUserDAO;
 import ru.pchelnikov.SpringBootDemo.Services.Exceptions.UserNotFoundException;
 import ru.pchelnikov.SpringBootDemo.Services.IUserService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
 public class UserService implements IUserService {
 
     private final IUserDAO userDB;
+    private final Map<String, Long> PHONE_TO_CHAT_ID = new HashMap<>();
 
     public UserService(IUserDAO userDB) {
         this.userDB = userDB;
@@ -46,6 +49,11 @@ public class UserService implements IUserService {
                 .phone(userDTO.phone != null ? userDTO.phone : oldUser.getPhone())
                 .build();
         userDB.update(newUser);
+
+        if (newUser.getPhone() != null) {
+            PHONE_TO_CHAT_ID.put(newUser.getPhone(), newUser.getChatId());
+        }
+
         log.info("User {} has been updated!", newUser.getChatId());
         log.info("Userlist now contains: {}", getAllUsers());
     }
@@ -56,13 +64,28 @@ public class UserService implements IUserService {
         User user = userDB.read(chatId);
         log.info("User {} is about to be deleted!", user.getUserName());
         userDB.delete(chatId);
+        PHONE_TO_CHAT_ID.remove(user.getPhone());
         log.info("Deletion complete!");
+    }
+
+    @Override
+    public void deleteUser(String phone) {
+        if (!PHONE_TO_CHAT_ID.containsKey(phone)) throw UserNotFoundException.init(phone);
+        Long chatId = PHONE_TO_CHAT_ID.get(phone);
+        deleteUser(chatId);
     }
 
     @Override
     public User getUser(Long chatId) {
         if (!userDB.hasUser(chatId)) throw UserNotFoundException.init(chatId);
         return userDB.read(chatId);
+    }
+
+    @Override
+    public User getUser(String phone) {
+        if (!PHONE_TO_CHAT_ID.containsKey(phone)) throw UserNotFoundException.init(phone);
+        Long chatId = PHONE_TO_CHAT_ID.get(phone);
+        return getUser(chatId);
     }
 
     @Override

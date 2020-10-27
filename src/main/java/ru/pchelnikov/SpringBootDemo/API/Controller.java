@@ -31,26 +31,26 @@ public class Controller {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/users/{chatId}")
-    HttpEntity<UserDTO> getUser(@PathVariable Long chatId) {
+    @GetMapping("/users/{phone}")
+    HttpEntity<UserDTO> getUser(@PathVariable String phone) {
         User user;
         try {
-            user = service.getUser(chatId);
+            user = service.getUser(phone);
         } catch (UserServiceException use) {
-            throw UserNotFoundException.init(chatId);
+            throw UserNotFoundException.init(phone);
         }
         UserDTO result = mapFromUserToUserDTO(user);
         return ResponseEntity.ok(result);
     }
 
-    @DeleteMapping("/users/{chatId}")
-    HttpEntity<Long> deleteUser(@PathVariable Long chatId) {
+    @DeleteMapping("/users/{phone}")
+    HttpEntity<String> deleteUser(@PathVariable String phone) {
         try {
-            service.deleteUser(chatId);
+            service.deleteUser(phone);
         } catch (UserServiceException use) {
-            throw UserNotFoundException.init(chatId);
+            throw UserNotFoundException.init(phone);
         }
-        return ResponseEntity.ok(chatId);
+        return ResponseEntity.ok("User with phone = " + phone + " was deleted");
     }
 
     private UserDTO mapFromUserToUserDTO(User user) {
