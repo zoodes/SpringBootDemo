@@ -10,4 +10,5 @@ public interface IMockServerService {
     void update(MockServerUserDTO mockServerUserDTO);
     void delete(String id);
     List<MockServerUserDTO> readAll();
+    boolean hasUser(String phone);
 }

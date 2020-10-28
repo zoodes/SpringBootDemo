@@ -4,6 +4,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import ru.pchelnikov.SpringBootDemo.DTOs.MockServerUserDTO;
+import ru.pchelnikov.SpringBootDemo.Services.Exceptions.MockServerException;
 import ru.pchelnikov.SpringBootDemo.Services.IMockServerService;
 
 import javax.annotation.PostConstruct;
@@ -22,7 +23,7 @@ public class MockServerService implements IMockServerService {
 
     @Override
     public void create(MockServerUserDTO mockServerUserDTO) {
-
+        //TODO
     }
 
     @Override
@@ -36,12 +37,12 @@ public class MockServerService implements IMockServerService {
 
     @Override
     public void update(MockServerUserDTO mockServerUserDTO) {
-
+        //TODO
     }
 
     @Override
     public void delete(String id) {
-
+        //TODO
     }
 
     @Override
@@ -50,6 +51,20 @@ public class MockServerService implements IMockServerService {
                         "https://serene-coast-56441.herokuapp.com/api/users/",
                         MockServerUserDTO[].class);
         MockServerUserDTO[] mockServerUserDTOS = response.getBody();
+        if (mockServerUserDTOS == null) throw new MockServerException("User list returned empty!");
         return Arrays.asList(mockServerUserDTOS);
+    }
+
+    @Override
+    public boolean hasUser(String phone) {
+        boolean result = false;
+        List<MockServerUserDTO> mockServerUserDTOS = readAll();
+        for (MockServerUserDTO mockServerUserDTO : mockServerUserDTOS) {
+            if (phone.equals(mockServerUserDTO.phone)) {
+                result = true;
+                break;
+            }
+        }
+        return result;
     }
 }

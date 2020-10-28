@@ -5,7 +5,8 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.pchelnikov.SpringBootDemo.DTOs.UserDTO;
 import ru.pchelnikov.SpringBootDemo.Entities.User;
-import ru.pchelnikov.SpringBootDemo.Services.Impl.UserService;
+import ru.pchelnikov.SpringBootDemo.Services.IMockServerService;
+import ru.pchelnikov.SpringBootDemo.Services.IUserService;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -18,11 +19,13 @@ import static ru.pchelnikov.SpringBootDemo.TelegramHandlers.UserDTOHandler.creat
 @Slf4j
 @Component
 public class ReplyHandler {
-    private final UserService userService;
+    private final IUserService userService;
+    private final IMockServerService mockServerService;
     private final Map<Long, ReplyMode> chatIdReplyMode = new HashMap<>();
 
-    public ReplyHandler(UserService userService) {
+    public ReplyHandler(IUserService userService, IMockServerService mockServerService) {
         this.userService = userService;
+        this.mockServerService = mockServerService;
     }
 
     public String startReply(Update update) {
@@ -79,15 +82,21 @@ public class ReplyHandler {
 
     private String replyToGetPhoneFromUser(Update update) {
         String phone = update.getMessage().getText().trim();
+        String reply;
         UserDTO userDTO = createUserDTOFromUpdate(update);
         userDTO.phone = phone;
         userService.updateUser(userDTO);
 
-        Long chatId = getChatId(update);
-        chatIdReplyMode.put(chatId, ReplyMode.DEFAULT);
+        if (mockServerService.hasUser(phone)) {
+            Long chatId = getChatId(update);
+            chatIdReplyMode.put(chatId, ReplyMode.DEFAULT);
 
-        String reply = "Phone number has been successfully entered";
-        log.info("Phone number has been successfully retrieved for user {}", update.getMessage().getChatId());
+            reply = "Phone number has been successfully entered, you are authorized";
+            log.info("Phone number has been successfully retrieved for user {}", update.getMessage().getChatId());
+        } else {
+            reply = "User with phone " + phone + " is not found on MockServer. Please enter valid phone number";
+            log.info("User with phone number {} has not been found on MockServer", phone);
+        }
         return reply;
     }
 
