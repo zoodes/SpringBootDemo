@@ -2,30 +2,21 @@ package ru.pchelnikov.SpringBootDemo.App.Configurations;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
-import ru.pchelnikov.SpringBootDemo.ServicesInterfaces.ITelegramService;
 import ru.pchelnikov.SpringBootDemo.App.TelegramHandlers.UpdateHandler;
 
-import javax.annotation.PostConstruct;
-
-@Service
+@Configuration
 @Slf4j
 @RequiredArgsConstructor
-public class TelegramConfig implements ITelegramService {
+public class TelegramConfig {
 
     private final UpdateHandler updateHandler;
 
-//    public  TelegramService(UpdateHandler updateHandler) {
-//        this.updateHandler = updateHandler;
-//    }
-
-    @Override
-    @PostConstruct
-    public void setup() {
-//        log.info("Initializing TelegramBot");
-//        ApiContextInitializer.init();
+    @Bean
+    public TelegramBotsApi telegramBotsApi() {
         log.info("Launching TelegramBot");
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
         try {
@@ -33,6 +24,7 @@ public class TelegramConfig implements ITelegramService {
         } catch (TelegramApiRequestException e) {
             e.printStackTrace();
         }
+        return telegramBotsApi;
     }
 
 }
