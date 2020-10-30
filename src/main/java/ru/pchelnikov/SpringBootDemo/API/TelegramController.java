@@ -1,5 +1,7 @@
 package ru.pchelnikov.SpringBootDemo.API;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
@@ -13,13 +15,15 @@ import ru.pchelnikov.SpringBootDemo.Services.IUserService;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Api("Telegram bot controller")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/users")
-public class Controller {
+public class TelegramController {
 
     private final IUserService service;
 
+    @ApiOperation("return an array of all users")
     @GetMapping
     HttpEntity<List<UserDTO>> getAllUsers() {
         List<User> users = service.getAllUsers();
@@ -29,6 +33,7 @@ public class Controller {
         return ResponseEntity.ok(result);
     }
 
+    @ApiOperation("return user with specific phone number")
     @GetMapping("/{phone}")
     HttpEntity<UserDTO> getUser(@PathVariable String phone) {
         User user;
@@ -41,6 +46,7 @@ public class Controller {
         return ResponseEntity.ok(result);
     }
 
+    @ApiOperation("delete user with specific phone number")
     @DeleteMapping("/{phone}")
     HttpEntity<String> deleteUser(@PathVariable String phone) {
         try {
