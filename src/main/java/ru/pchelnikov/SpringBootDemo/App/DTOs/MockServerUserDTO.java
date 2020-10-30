@@ -1,10 +1,7 @@
 package ru.pchelnikov.SpringBootDemo.App.DTOs;
 
-import lombok.ToString;
-
 import java.util.Date;
 
-@ToString
 public class MockServerUserDTO {
     public Date birthDay;
     public Long chatId;
