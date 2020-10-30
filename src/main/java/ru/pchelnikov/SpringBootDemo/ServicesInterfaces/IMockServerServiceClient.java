@@ -1,10 +1,10 @@
-package ru.pchelnikov.SpringBootDemo.Services;
+package ru.pchelnikov.SpringBootDemo.ServicesInterfaces;
 
-import ru.pchelnikov.SpringBootDemo.DTOs.MockServerUserDTO;
+import ru.pchelnikov.SpringBootDemo.App.DTOs.MockServerUserDTO;
 
 import java.util.List;
 
-public interface IMockServerService {
+public interface IMockServerServiceClient {
     void create(MockServerUserDTO mockServerUserDTO);
     MockServerUserDTO read(String id);
     void update(MockServerUserDTO mockServerUserDTO);

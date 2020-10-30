@@ -1,4 +1,4 @@
-package ru.pchelnikov.SpringBootDemo.Configurations;
+package ru.pchelnikov.SpringBootDemo.App.Configurations;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

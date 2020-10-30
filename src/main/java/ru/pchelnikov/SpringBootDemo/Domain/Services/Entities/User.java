@@ -1,4 +1,4 @@
-package ru.pchelnikov.SpringBootDemo.Entities;
+package ru.pchelnikov.SpringBootDemo.Domain.Services.Entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

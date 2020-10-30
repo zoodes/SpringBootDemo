@@ -1,7 +1,8 @@
-package ru.pchelnikov.SpringBootDemo.Repositories;
+package ru.pchelnikov.SpringBootDemo.Domain.Repositories;
 
 import org.springframework.stereotype.Repository;
-import ru.pchelnikov.SpringBootDemo.Entities.User;
+import ru.pchelnikov.SpringBootDemo.Domain.Services.Entities.User;
+import ru.pchelnikov.SpringBootDemo.ServicesInterfaces.IUserDAO;
 
 import java.util.ArrayList;
 import java.util.HashMap;

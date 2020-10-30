@@ -1,4 +1,4 @@
-package ru.pchelnikov.SpringBootDemo.API;
+package ru.pchelnikov.SpringBootDemo.App.Web;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -6,11 +6,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.pchelnikov.SpringBootDemo.DTOs.UserDTO;
-import ru.pchelnikov.SpringBootDemo.Entities.User;
-import ru.pchelnikov.SpringBootDemo.Services.Exceptions.UserNotFoundException;
-import ru.pchelnikov.SpringBootDemo.Services.Exceptions.UserServiceException;
-import ru.pchelnikov.SpringBootDemo.Services.IUserService;
+import ru.pchelnikov.SpringBootDemo.Domain.DTOs.UserDTO;
+import ru.pchelnikov.SpringBootDemo.Domain.Services.Entities.User;
+import ru.pchelnikov.SpringBootDemo.Domain.Exceptions.UserNotFoundException;
+import ru.pchelnikov.SpringBootDemo.Domain.Exceptions.UserServiceException;
+import ru.pchelnikov.SpringBootDemo.ServicesInterfaces.IUserService;
 
 import java.util.List;
 import java.util.stream.Collectors;

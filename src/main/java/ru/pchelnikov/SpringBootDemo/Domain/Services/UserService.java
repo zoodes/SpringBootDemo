@@ -1,12 +1,12 @@
-package ru.pchelnikov.SpringBootDemo.Services.Impl;
+package ru.pchelnikov.SpringBootDemo.Domain.Services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.pchelnikov.SpringBootDemo.DTOs.UserDTO;
-import ru.pchelnikov.SpringBootDemo.Entities.User;
-import ru.pchelnikov.SpringBootDemo.Repositories.IUserDAO;
-import ru.pchelnikov.SpringBootDemo.Services.Exceptions.UserNotFoundException;
-import ru.pchelnikov.SpringBootDemo.Services.IUserService;
+import ru.pchelnikov.SpringBootDemo.Domain.DTOs.UserDTO;
+import ru.pchelnikov.SpringBootDemo.Domain.Services.Entities.User;
+import ru.pchelnikov.SpringBootDemo.ServicesInterfaces.IUserDAO;
+import ru.pchelnikov.SpringBootDemo.Domain.Exceptions.UserNotFoundException;
+import ru.pchelnikov.SpringBootDemo.ServicesInterfaces.IUserService;
 
 import java.util.HashMap;
 import java.util.List;

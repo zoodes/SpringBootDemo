@@ -1,4 +1,4 @@
-package ru.pchelnikov.SpringBootDemo.DTOs;
+package ru.pchelnikov.SpringBootDemo.App.DTOs;
 
 import lombok.ToString;
 

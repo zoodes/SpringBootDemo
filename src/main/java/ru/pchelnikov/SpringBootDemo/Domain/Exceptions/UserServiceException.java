@@ -1,4 +1,4 @@
-package ru.pchelnikov.SpringBootDemo.Services.Exceptions;
+package ru.pchelnikov.SpringBootDemo.Domain.Exceptions;
 
 public class UserServiceException extends RuntimeException {
     public UserServiceException(String message) {

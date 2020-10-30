@@ -1,4 +1,4 @@
-package ru.pchelnikov.SpringBootDemo.TelegramHandlers;
+package ru.pchelnikov.SpringBootDemo.App.TelegramHandlers;
 
 public enum ReplyMode {
     DEFAULT,

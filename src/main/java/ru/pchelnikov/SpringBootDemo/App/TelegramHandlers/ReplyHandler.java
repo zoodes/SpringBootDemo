@@ -1,12 +1,12 @@
-package ru.pchelnikov.SpringBootDemo.TelegramHandlers;
+package ru.pchelnikov.SpringBootDemo.App.TelegramHandlers;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.pchelnikov.SpringBootDemo.DTOs.UserDTO;
-import ru.pchelnikov.SpringBootDemo.Entities.User;
-import ru.pchelnikov.SpringBootDemo.Services.IMockServerService;
-import ru.pchelnikov.SpringBootDemo.Services.IUserService;
+import ru.pchelnikov.SpringBootDemo.Domain.DTOs.UserDTO;
+import ru.pchelnikov.SpringBootDemo.Domain.Services.Entities.User;
+import ru.pchelnikov.SpringBootDemo.ServicesInterfaces.IMockServerServiceClient;
+import ru.pchelnikov.SpringBootDemo.ServicesInterfaces.IUserService;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -14,16 +14,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static ru.pchelnikov.SpringBootDemo.TelegramHandlers.UserDTOHandler.createUserDTOFromUpdate;
+import static ru.pchelnikov.SpringBootDemo.App.TelegramHandlers.UserDTOHandler.createUserDTOFromUpdate;
 
 @Slf4j
 @Component
 public class ReplyHandler {
     private final IUserService userService;
-    private final IMockServerService mockServerService;
+    private final IMockServerServiceClient mockServerService;
     private final Map<Long, ReplyMode> chatIdReplyMode = new HashMap<>();
 
-    public ReplyHandler(IUserService userService, IMockServerService mockServerService) {
+    public ReplyHandler(IUserService userService, IMockServerServiceClient mockServerService) {
         this.userService = userService;
         this.mockServerService = mockServerService;
     }

@@ -1,4 +1,4 @@
-package ru.pchelnikov.SpringBootDemo.Services.Exceptions;
+package ru.pchelnikov.SpringBootDemo.Domain.Exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

@@ -1,19 +1,19 @@
-package ru.pchelnikov.SpringBootDemo.Services.Impl;
+package ru.pchelnikov.SpringBootDemo.App.Configurations;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
-import ru.pchelnikov.SpringBootDemo.Services.ITelegramService;
-import ru.pchelnikov.SpringBootDemo.TelegramHandlers.UpdateHandler;
+import ru.pchelnikov.SpringBootDemo.ServicesInterfaces.ITelegramService;
+import ru.pchelnikov.SpringBootDemo.App.TelegramHandlers.UpdateHandler;
 
 import javax.annotation.PostConstruct;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class TelegramService implements ITelegramService {
+public class TelegramConfig implements ITelegramService {
 
     private final UpdateHandler updateHandler;
 

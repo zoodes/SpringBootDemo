@@ -1,7 +1,7 @@
-package ru.pchelnikov.SpringBootDemo.TelegramHandlers;
+package ru.pchelnikov.SpringBootDemo.App.TelegramHandlers;
 
 import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.pchelnikov.SpringBootDemo.DTOs.UserDTO;
+import ru.pchelnikov.SpringBootDemo.Domain.DTOs.UserDTO;
 
 public class UserDTOHandler {
     public static UserDTO createUserDTOFromUpdate(Update update) {

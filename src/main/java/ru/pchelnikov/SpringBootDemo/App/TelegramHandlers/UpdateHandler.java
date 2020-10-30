@@ -1,4 +1,4 @@
-package ru.pchelnikov.SpringBootDemo.TelegramHandlers;
+package ru.pchelnikov.SpringBootDemo.App.TelegramHandlers;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,11 +9,11 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.pchelnikov.SpringBootDemo.DTOs.UserDTO;
-import ru.pchelnikov.SpringBootDemo.Services.IUserService;
+import ru.pchelnikov.SpringBootDemo.Domain.DTOs.UserDTO;
+import ru.pchelnikov.SpringBootDemo.ServicesInterfaces.IUserService;
 import java.util.ArrayList;
 
-import static ru.pchelnikov.SpringBootDemo.TelegramHandlers.UserDTOHandler.createUserDTOFromUpdate;
+import static ru.pchelnikov.SpringBootDemo.App.TelegramHandlers.UserDTOHandler.createUserDTOFromUpdate;
 
 @Slf4j
 @Component

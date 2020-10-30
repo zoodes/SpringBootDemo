@@ -1,13 +1,12 @@
-package ru.pchelnikov.SpringBootDemo.Services.Impl;
+package ru.pchelnikov.SpringBootDemo.App.Clients;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import ru.pchelnikov.SpringBootDemo.DTOs.MockServerUserDTO;
-import ru.pchelnikov.SpringBootDemo.Services.Exceptions.MockServerException;
-import ru.pchelnikov.SpringBootDemo.Services.IMockServerService;
+import ru.pchelnikov.SpringBootDemo.App.DTOs.MockServerUserDTO;
+import ru.pchelnikov.SpringBootDemo.ServicesInterfaces.IMockServerServiceClient;
 
 import javax.annotation.PostConstruct;
 import java.util.Arrays;
@@ -15,7 +14,7 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class MockServerService implements IMockServerService {
+public class MockServerServiceClient implements IMockServerServiceClient {
 
     RestTemplate restTemplate;
 

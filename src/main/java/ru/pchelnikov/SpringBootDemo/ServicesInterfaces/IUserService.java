@@ -1,7 +1,7 @@
-package ru.pchelnikov.SpringBootDemo.Services;
+package ru.pchelnikov.SpringBootDemo.ServicesInterfaces;
 
-import ru.pchelnikov.SpringBootDemo.DTOs.UserDTO;
-import ru.pchelnikov.SpringBootDemo.Entities.User;
+import ru.pchelnikov.SpringBootDemo.Domain.DTOs.UserDTO;
+import ru.pchelnikov.SpringBootDemo.Domain.Services.Entities.User;
 
 import java.util.List;
 
