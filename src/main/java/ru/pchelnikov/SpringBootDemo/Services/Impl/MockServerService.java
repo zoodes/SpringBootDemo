@@ -1,7 +1,9 @@
 package ru.pchelnikov.SpringBootDemo.Services.Impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import ru.pchelnikov.SpringBootDemo.DTOs.MockServerUserDTO;
 import ru.pchelnikov.SpringBootDemo.Services.Exceptions.MockServerException;
@@ -12,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
+@Slf4j
 public class MockServerService implements IMockServerService {
 
     RestTemplate restTemplate;
@@ -47,11 +50,18 @@ public class MockServerService implements IMockServerService {
 
     @Override
     public List<MockServerUserDTO> readAll() {
-        ResponseEntity<MockServerUserDTO[]> response = restTemplate.getForEntity(
-                        "https://serene-coast-56441.herokuapp.com/api/users/",
-                        MockServerUserDTO[].class);
-        MockServerUserDTO[] mockServerUserDTOS = response.getBody();
-        if (mockServerUserDTOS == null) throw new MockServerException("User list returned empty!");
+        MockServerUserDTO[] mockServerUserDTOS = new MockServerUserDTO[0];
+        try {
+            ResponseEntity<MockServerUserDTO[]> response = restTemplate.getForEntity(
+                            "https://serene-coast-56441.herokuapp.com/api/users/",
+                            MockServerUserDTO[].class);
+            mockServerUserDTOS = response.getBody();
+        } catch (RestClientException e) {
+//            e.printStackTrace();
+//            throw new MockServerException("No users have been found on MockServer!");
+            log.error("No users have been found on MockServer. Check if it has any!");
+        }
+//        if (mockServerUserDTOS == null) throw new MockServerException("User list returned empty!");
         return Arrays.asList(mockServerUserDTOS);
     }
 
