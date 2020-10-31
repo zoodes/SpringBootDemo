@@ -12,6 +12,7 @@ import ru.pchelnikov.SpringBootDemo.ServicesInterfaces.IMockServerServiceClient;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -29,7 +30,7 @@ public class MockServerServiceClient implements IMockServerServiceClient {
     }
 
     @Override
-    public MockServerUserDTO read(String id) {
+    public MockServerUserDTO read(UUID id) {
         ResponseEntity<MockServerUserDTO> response =
                 restTemplate.getForEntity(
                         mockServerURL + "users/" + id,
@@ -43,7 +44,7 @@ public class MockServerServiceClient implements IMockServerServiceClient {
     }
 
     @Override
-    public void delete(String id) {
+    public void delete(UUID id) {
         //TODO
     }
 
@@ -61,10 +62,19 @@ public class MockServerServiceClient implements IMockServerServiceClient {
         return Arrays.asList(mockServerUserDTOS);
     }
 
-
     @Override
     public boolean hasUser(String phone) {
         return readAll().stream()
                 .anyMatch(dto -> phone.equals(dto.phone));
+    }
+
+    @Override
+    public boolean hasUser(UUID id) {
+        try {
+            read(id);
+            return true;
+        } catch (RuntimeException e) {
+            return false;
+        }
     }
 }
