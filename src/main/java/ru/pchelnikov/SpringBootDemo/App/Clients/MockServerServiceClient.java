@@ -1,27 +1,24 @@
 package ru.pchelnikov.SpringBootDemo.App.Clients;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.*;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestOperations;
 import ru.pchelnikov.SpringBootDemo.App.DTOs.MockServerUserDTO;
 import ru.pchelnikov.SpringBootDemo.ServicesInterfaces.IMockServerServiceClient;
 
-import javax.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class MockServerServiceClient implements IMockServerServiceClient {
 
-    RestTemplate restTemplate;
+    private final RestOperations restTemplate;
 
-    @PostConstruct
-    public void init() {
-        restTemplate = new RestTemplate();
-    }
 
     @Override
     public void create(MockServerUserDTO mockServerUserDTO) {
@@ -56,11 +53,8 @@ public class MockServerServiceClient implements IMockServerServiceClient {
                             MockServerUserDTO[].class);
             mockServerUserDTOS = response.getBody();
         } catch (RestClientException e) {
-//            e.printStackTrace();
-//            throw new MockServerException("No users have been found on MockServer!");
             log.error("No users have been found on MockServer. Check if it has any!");
         }
-//        if (mockServerUserDTOS == null) throw new MockServerException("User list returned empty!");
         return Arrays.asList(mockServerUserDTOS);
     }
 
