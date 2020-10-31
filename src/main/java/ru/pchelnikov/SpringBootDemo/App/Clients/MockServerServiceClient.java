@@ -19,8 +19,9 @@ import java.util.List;
 public class MockServerServiceClient implements IMockServerServiceClient {
 
     private final RestOperations restTemplate;
-    @Value("${mockServer.URL}")
-    private String mockServerURL;
+    //TODO replace with @value
+//    @Value("${mockServer.URL}")
+    private String mockServerURL = "https://serene-coast-56441.herokuapp.com/api/";
 
     @Override
     public void create(MockServerUserDTO mockServerUserDTO) {
@@ -60,16 +61,10 @@ public class MockServerServiceClient implements IMockServerServiceClient {
         return Arrays.asList(mockServerUserDTOS);
     }
 
+
     @Override
     public boolean hasUser(String phone) {
-        boolean result = false;
-        List<MockServerUserDTO> mockServerUserDTOS = readAll();
-        for (MockServerUserDTO mockServerUserDTO : mockServerUserDTOS) {
-            if (phone.equals(mockServerUserDTO.phone)) {
-                result = true;
-                break;
-            }
-        }
-        return result;
+        return readAll().stream()
+                .anyMatch(dto -> phone.equals(dto.phone));
     }
 }
