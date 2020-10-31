@@ -2,6 +2,7 @@ package ru.pchelnikov.SpringBootDemo.App.Clients;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
@@ -18,7 +19,8 @@ import java.util.List;
 public class MockServerServiceClient implements IMockServerServiceClient {
 
     private final RestOperations restTemplate;
-
+    @Value("${mockServer.URL}")
+    private String mockServerURL;
 
     @Override
     public void create(MockServerUserDTO mockServerUserDTO) {
@@ -29,7 +31,7 @@ public class MockServerServiceClient implements IMockServerServiceClient {
     public MockServerUserDTO read(String id) {
         ResponseEntity<MockServerUserDTO> response =
                 restTemplate.getForEntity(
-                        "https://serene-coast-56441.herokuapp.com/api/users/" + id,
+                        mockServerURL + "users/" + id,
                         MockServerUserDTO.class);
         return response.getBody();
     }
@@ -49,7 +51,7 @@ public class MockServerServiceClient implements IMockServerServiceClient {
         MockServerUserDTO[] mockServerUserDTOS = new MockServerUserDTO[0];
         try {
             ResponseEntity<MockServerUserDTO[]> response = restTemplate.getForEntity(
-                            "https://serene-coast-56441.herokuapp.com/api/users/",
+                            mockServerURL + "users/",
                             MockServerUserDTO[].class);
             mockServerUserDTOS = response.getBody();
         } catch (RestClientException e) {
