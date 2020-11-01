@@ -8,6 +8,7 @@ import java.util.UUID;
 public interface IMockServerServiceClient {
     UUID create(MockServerUserDTO mockServerUserDTO);
     MockServerUserDTO read(UUID id);
+    MockServerUserDTO read(String phone);
     List<MockServerUserDTO> readAll();
     boolean hasUser(String phone);
     boolean hasUser(UUID id);

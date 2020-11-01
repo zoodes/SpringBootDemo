@@ -42,6 +42,14 @@ public class MockServerServiceClient implements IMockServerServiceClient {
     }
 
     @Override
+    public MockServerUserDTO read(String phone) {
+        return readAll().stream()
+                .filter(dto -> phone.equals(dto.phone))
+                .findFirst()
+                .get();
+    }
+
+    @Override
     public List<MockServerUserDTO> readAll() {
         MockServerUserDTO[] mockServerUserDTOS = new MockServerUserDTO[0];
         try {
