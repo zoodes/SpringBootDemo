@@ -1,11 +1,11 @@
 package ru.pchelnikov.SpringBootDemo.App.Clients;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
-import org.springframework.stereotype.Service;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestOperations;
 import ru.pchelnikov.SpringBootDemo.App.DTOs.MockServerUserDTO;
@@ -15,9 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-//@Service
 @Slf4j
-//@RequiredArgsConstructor
 public class MockServerServiceClient implements IMockServerServiceClient {
     @Autowired
     private RestOperations restTemplate;
@@ -27,12 +25,10 @@ public class MockServerServiceClient implements IMockServerServiceClient {
     @Override
     public UUID create(MockServerUserDTO mockServerUserDTO) {
         HttpEntity<MockServerUserDTO> request = new HttpEntity<>(mockServerUserDTO);
-        log.debug("request: {}", request.toString());
         ResponseEntity<String> responseEntity = restTemplate.exchange(mockServerURL + "users/",
                 HttpMethod.POST,
                 request,
                 String.class);
-        log.debug("responseEntity: {}", responseEntity.getBody());
         return UUID.fromString(responseEntity.getBody().replaceAll("\"", ""));
     }
 

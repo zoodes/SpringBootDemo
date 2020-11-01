@@ -1,7 +1,6 @@
 package ru.pchelnikov.SpringBootDemo.App.Clients;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 import ru.pchelnikov.SpringBootDemo.App.DTOs.MockServerUserDTO;
 import ru.pchelnikov.SpringBootDemo.ServicesInterfaces.IMockServerServiceClient;
 
@@ -9,7 +8,6 @@ import javax.annotation.PostConstruct;
 import java.util.*;
 
 @Slf4j
-//@Service
 public class MockServerMockServiceClient implements IMockServerServiceClient {
 
     private final Map<UUID, MockServerUserDTO> UuidToDto = new HashMap<>();

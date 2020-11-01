@@ -4,12 +4,10 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.deser.std.UUIDDeserializer;
 import com.fasterxml.jackson.databind.ser.std.UUIDSerializer;
-import lombok.ToString;
 
 import java.util.Date;
 import java.util.UUID;
 
-@ToString
 public class MockServerUserDTO {
     public Date birthDay;
     public String chatId;
