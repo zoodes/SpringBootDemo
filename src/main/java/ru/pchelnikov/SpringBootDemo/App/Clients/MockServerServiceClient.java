@@ -1,11 +1,13 @@
 package ru.pchelnikov.SpringBootDemo.App.Clients;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestOperations;
-import ru.pchelnikov.SpringBootDemo.App.DTOs.UserDto;
+import ru.pchelnikov.SpringBootDemo.App.DTOs.MockServerUserDTO;
 import ru.pchelnikov.SpringBootDemo.ServicesInterfaces.IMockServerServiceClient;
 
 import java.util.Arrays;
@@ -14,64 +16,46 @@ import java.util.UUID;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class MockServerServiceClient implements IMockServerServiceClient {
 
     private final RestOperations restTemplate;
-    //TODO replace with @value
-//    @Value("${mockServer.URL}")
-    private String mockServerURL = "https://serene-coast-56441.herokuapp.com/api/";
-
-    public MockServerServiceClient(RestOperations restTemplate) {
-        this.restTemplate = restTemplate;
-    }
+    @Value("${mockServer.URL}")
+    private String mockServerURL;
 
     @Override
-    public void create(UserDto userDto) {
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.add("Accept", MediaType.APPLICATION_JSON.toString());
-//        headers.add("Content-Type", MediaType.APPLICATION_JSON.toString());
-        HttpEntity<UserDto> request = new HttpEntity<>(userDto); // , headers);
-//        restTemplate.postForObject(mockServerURL + "users/", request, UserDto.class);
+    public UUID create(MockServerUserDTO mockServerUserDTO) {
+        HttpEntity<MockServerUserDTO> request = new HttpEntity<>(mockServerUserDTO);
         log.debug("request: {}", request.toString());
         ResponseEntity<String> responseEntity = restTemplate.exchange(mockServerURL + "users/",
                 HttpMethod.POST,
                 request,
                 String.class);
         log.debug("responseEntity: {}", responseEntity.getBody());
+        return UUID.fromString(responseEntity.getBody().replaceAll("\"", ""));
     }
 
     @Override
-    public UserDto read(UUID id) {
-        ResponseEntity<UserDto> response =
+    public MockServerUserDTO read(UUID id) {
+        ResponseEntity<MockServerUserDTO> response =
                 restTemplate.getForEntity(
                         mockServerURL + "users/" + id,
-                        UserDto.class);
+                        MockServerUserDTO.class);
         return response.getBody();
     }
 
     @Override
-    public void update(UserDto userDto) {
-        //TODO
-    }
-
-    @Override
-    public void delete(UUID id) {
-        //TODO
-    }
-
-    @Override
-    public List<UserDto> readAll() {
-        UserDto[] userDtos = new UserDto[0];
+    public List<MockServerUserDTO> readAll() {
+        MockServerUserDTO[] mockServerUserDTOS = new MockServerUserDTO[0];
         try {
-            ResponseEntity<UserDto[]> response = restTemplate.getForEntity(
+            ResponseEntity<MockServerUserDTO[]> response = restTemplate.getForEntity(
                             mockServerURL + "users/",
-                            UserDto[].class);
-            userDtos = response.getBody();
+                            MockServerUserDTO[].class);
+            mockServerUserDTOS = response.getBody();
         } catch (RestClientException e) {
             log.error("No users have been found on MockServer. Check if it has any!");
-            throw e;
         }
-        return Arrays.asList(userDtos);
+        return Arrays.asList(mockServerUserDTOS);
     }
 
     @Override
