@@ -2,6 +2,7 @@ package ru.pchelnikov.SpringBootDemo.App.Clients;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -14,12 +15,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-@Service
+//@Service
 @Slf4j
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class MockServerServiceClient implements IMockServerServiceClient {
-
-    private final RestOperations restTemplate;
+    @Autowired
+    private RestOperations restTemplate;
     @Value("${mockServer.URL}")
     private String mockServerURL;
 

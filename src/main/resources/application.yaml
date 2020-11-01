@@ -3,3 +3,4 @@ bot:
   token: 1273448729:AAEsX77rwpBf-i1iYFLkbvOFctnUEVsY6vc
 mockServer:
   URL: https://serene-coast-56441.herokuapp.com/api/
+useMock: true

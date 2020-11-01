@@ -9,7 +9,7 @@ import javax.annotation.PostConstruct;
 import java.util.*;
 
 @Slf4j
-@Service
+//@Service
 public class MockServerMockServiceClient implements IMockServerServiceClient {
 
     private final Map<UUID, MockServerUserDTO> UuidToDto = new HashMap<>();
