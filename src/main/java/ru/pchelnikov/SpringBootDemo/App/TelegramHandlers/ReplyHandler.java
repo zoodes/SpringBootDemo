@@ -3,6 +3,7 @@ package ru.pchelnikov.SpringBootDemo.App.TelegramHandlers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import ru.pchelnikov.SpringBootDemo.App.DTOs.MockServerUserDTO;
 import ru.pchelnikov.SpringBootDemo.Domain.DTOs.UserDTO;
 import ru.pchelnikov.SpringBootDemo.Domain.Services.Entities.User;
 import ru.pchelnikov.SpringBootDemo.ServicesInterfaces.IMockServerServiceClient;
@@ -20,12 +21,12 @@ import static ru.pchelnikov.SpringBootDemo.App.TelegramHandlers.UserDTOHandler.c
 @Component
 public class ReplyHandler {
     private final IUserService userService;
-    private final IMockServerServiceClient mockServerService;
+    private final IMockServerServiceClient mockServerServiceClient;
     private final Map<Long, ReplyMode> chatIdReplyMode = new HashMap<>();
 
-    public ReplyHandler(IUserService userService, IMockServerServiceClient mockServerService) {
+    public ReplyHandler(IUserService userService, IMockServerServiceClient mockServerServiceClient) {
         this.userService = userService;
-        this.mockServerService = mockServerService;
+        this.mockServerServiceClient = mockServerServiceClient;
     }
 
     public String startReply(Update update) {
@@ -44,13 +45,26 @@ public class ReplyHandler {
 
     public String infoReply(Update update) {
         User user = userService.getUser(update.getMessage().getChatId());
-        return "Here is what I know about you:\n"
+        String reply = "Here is what I know about you:\n"
                 + "userName: " + user.getUserName() + ",\n"
                 + "firstName: " + user.getFirstName() + ",\n"
                 + "lastName: " + user.getLastName() + ",\n"
                 + "chatId: " + user.getChatId() + ",\n"
                 + "birthDate: " + user.getBirthDate() + "\n"
-                + "phone: " + user.getPhone() + ".";
+                + "phone: " + user.getPhone();
+        if (mockServerServiceClient.hasUser(user.getPhone())) {
+            MockServerUserDTO userDTO = mockServerServiceClient.read(user.getPhone());
+            reply += ", \n\n"
+                    + "id on MockServer: " + userDTO.id + ", \n"
+                    + "firstName on MockServer: " + userDTO.firstName + ", \n"
+                    + "middleName on MockServer: " + userDTO.middleName + ", \n"
+                    + "secondName on MockServer: " + userDTO.secondName + ", \n"
+                    + "birthday on MockServer: " + userDTO.birthDay + ", \n"
+                    + "isMale on MockServer: " + userDTO.male + ".";
+        } else {
+            reply += ".";
+        }
+        return reply;
     }
 
     public String birthdayReply() {
@@ -87,7 +101,7 @@ public class ReplyHandler {
         userDTO.phone = phone;
         userService.updateUser(userDTO);
 
-        if (mockServerService.hasUser(phone)) {
+        if (mockServerServiceClient.hasUser(phone)) {
             Long chatId = getChatId(update);
             chatIdReplyMode.put(chatId, ReplyMode.DEFAULT);
 
