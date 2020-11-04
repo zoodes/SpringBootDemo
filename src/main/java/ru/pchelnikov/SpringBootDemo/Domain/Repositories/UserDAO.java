@@ -2,6 +2,7 @@ package ru.pchelnikov.SpringBootDemo.Domain.Repositories;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 import ru.pchelnikov.SpringBootDemo.Domain.Services.Entities.User;
 import ru.pchelnikov.SpringBootDemo.ServicesInterfaces.IUserDAO;
@@ -12,6 +13,7 @@ import java.util.List;
 @Repository
 @Slf4j
 @RequiredArgsConstructor
+@ConditionalOnProperty(value = "useMockUserDAO", havingValue = "false")
 public class UserDAO implements IUserDAO {
 
     private final DBConnectionFactory dbConnectionFactory;

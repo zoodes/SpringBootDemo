@@ -1,5 +1,6 @@
 package ru.pchelnikov.SpringBootDemo.Domain.Repositories;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import ru.pchelnikov.SpringBootDemo.Domain.Services.Entities.User;
@@ -11,7 +12,8 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-@Primary
+//@Primary
+@ConditionalOnProperty(value = "useMockUserDAO", havingValue = "true")
 public class MockUserDAO implements IUserDAO {
     private static final Map<Long, User> CHAT_ID_TO_USER = new HashMap<>();
 

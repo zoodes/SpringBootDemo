@@ -17,13 +17,13 @@ public class MockServerClientConfig {
     }
 
     @Bean
-    @ConditionalOnProperty(value = "useMock", havingValue = "true")
+    @ConditionalOnProperty(value = "useMockServerClient", havingValue = "true")
     public IMockServerServiceClient useMock() {
         return new MockServerMockServiceClient();
     }
 
     @Bean
-    @ConditionalOnProperty(value = "useMock", havingValue = "false")
+    @ConditionalOnProperty(value = "useMockServerClient", havingValue = "false")
     public IMockServerServiceClient useNoMock() {
         return new MockServerServiceClient();
     }

@@ -29,7 +29,7 @@ public class SpringBootDemoApplication {
 //		DBConnectionFactory factory = new DBConnectionFactory();
 //		log.debug("User list in DB: {}", factory.process());
 
-		UserDAO userDAO = ctx.getBean(UserDAO.class);
+		IUserDAO userDAO = ctx.getBean(IUserDAO.class);
 		log.debug("getAllUsers(): {}", userDAO.getAllUsers());
 		log.debug("getUser() with chatId=123456: {}", userDAO.read(123456L));
 		log.debug("hasUser() with existing user: {}", userDAO.hasUser(123456L));
