@@ -1,11 +1,13 @@
 package ru.pchelnikov.SpringBootDemo.Domain.Repositories;
 
-import ru.pchelnikov.SpringBootDemo.Domain.DTOs.UserDTO;
+import org.springframework.stereotype.Component;
+import ru.pchelnikov.SpringBootDemo.Domain.Services.Entities.User;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class DBConnectionFactory {
 //    static final String JDBC_DRIVER = "org.postgresql.Driver";
     static final String DATABASE_URL = "jdbc:postgresql://ec2-3-210-23-22.compute-1.amazonaws.com:5432/dp3r1igkksr32";
@@ -29,6 +31,14 @@ public class DBConnectionFactory {
         }
     }
 
+    public PreparedStatement createPreparedStatement(Connection connection, String query) {
+        try {
+            return connection.prepareStatement(query);
+        } catch (SQLException e) {
+            throw new RuntimeException("Error while creating statement!");
+        }
+    }
+
     public ResultSet executeStatement(Statement statement, String query) {
         try {
             return statement.executeQuery(query);
@@ -37,7 +47,15 @@ public class DBConnectionFactory {
         }
     }
 
-    public List<UserDTO> process() throws SQLException {
+    public ResultSet executeStatement(PreparedStatement statement) {
+        try {
+            return statement.executeQuery();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error while executing statement!");
+        }
+    }
+
+    public List<User> process() throws SQLException {
         String query = getQuery();
         Connection connection = null;
         Statement statement = null;
@@ -71,10 +89,10 @@ public class DBConnectionFactory {
         return "SELECT * FROM tg_user";
     }
 
-    private List<UserDTO> processResultSet(ResultSet resultSet) throws SQLException {
-        List<UserDTO> result = new ArrayList<>();
+    public List<User> processResultSet(ResultSet resultSet) throws SQLException {
+        List<User> result = new ArrayList<>();
         while (resultSet.next()) {
-            UserDTO user = UserDTO.builder()
+            User user = User.builder()
                     .chatId(resultSet.getLong("chat_id"))
                     .userName(resultSet.getString("user_name"))
                     .firstName(resultSet.getString("first_name"))
