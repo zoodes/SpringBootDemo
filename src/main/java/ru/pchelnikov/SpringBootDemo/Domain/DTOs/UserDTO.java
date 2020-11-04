@@ -1,7 +1,10 @@
 package ru.pchelnikov.SpringBootDemo.Domain.DTOs;
 
+import lombok.ToString;
+
 import java.util.Date;
 
+@ToString
 public class UserDTO {
     public long chatId;
     public String userName;
