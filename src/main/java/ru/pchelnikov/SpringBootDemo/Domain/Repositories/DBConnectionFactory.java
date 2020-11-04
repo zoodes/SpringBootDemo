@@ -74,13 +74,23 @@ public class DBConnectionFactory {
     private List<UserDTO> processResultSet(ResultSet resultSet) throws SQLException {
         List<UserDTO> result = new ArrayList<>();
         while (resultSet.next()) {
-            UserDTO user = new UserDTO();
-            user.chatId = resultSet.getLong("chat_id");
-            user.userName = resultSet.getString("user_name");
-            user.firstName = resultSet.getString("first_name");
-            user.lastName = resultSet.getString("last_name");
-            user.birthDate = resultSet.getDate("birth_date");
-            user.phone = resultSet.getString("phone");
+            UserDTO user = UserDTO.builder()
+                    .chatId(resultSet.getLong("chat_id"))
+                    .userName(resultSet.getString("user_name"))
+                    .firstName(resultSet.getString("first_name"))
+                    .lastName(resultSet.getString("last_name"))
+                    .birthDate(resultSet.getDate("birth_date"))
+                    .phone(resultSet.getString("phone"))
+                    .build();
+
+//            UserDTO user = new UserDTO();
+//            user.chatId = resultSet.getLong("chat_id");
+//            user.userName = resultSet.getString("user_name");
+//            user.firstName = resultSet.getString("first_name");
+//            user.lastName = resultSet.getString("last_name");
+//            user.birthDate = resultSet.getDate("birth_date");
+//            user.phone = resultSet.getString("phone");
+
             result.add(user);
         }
         return result;
