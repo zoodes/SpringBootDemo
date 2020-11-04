@@ -29,7 +29,8 @@ public class UserDAO implements IUserDAO {
             statement.setString(2, user.getUserName());
             statement.setString(3, user.getFirstName());
             statement.setString(4, user.getLastName());
-            statement.setDate(5, new Date(user.getBirthDate().getTime()));
+            Date birthdate = user.getBirthDate() == null ? null : new Date(user.getBirthDate().getTime());
+            statement.setDate(5, birthdate);
             statement.setString(6, user.getPhone());
             statement.executeUpdate();
         } catch (Throwable e) {
@@ -67,7 +68,8 @@ public class UserDAO implements IUserDAO {
             statement.setString(1, user.getUserName());
             statement.setString(2, user.getFirstName());
             statement.setString(3, user.getLastName());
-            statement.setDate(4, new Date(user.getBirthDate().getTime()));
+            Date birthdate = user.getBirthDate() == null ? null : new Date(user.getBirthDate().getTime());
+            statement.setDate(4, birthdate);
             statement.setString(5, user.getPhone());
             statement.setLong(6, user.getChatId());
             statement.executeUpdate();

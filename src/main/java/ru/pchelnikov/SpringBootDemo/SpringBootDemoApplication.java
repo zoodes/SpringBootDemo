@@ -56,6 +56,5 @@ public class SpringBootDemoApplication {
 		log.debug("now delete the user...");
 		userDAO.delete(randomChatId);
 		log.debug("has new user with chatId " + randomChatId + ": {}", userDAO.hasUser(randomChatId));
-		userDAO.delete(12832L);
 	}
 }
