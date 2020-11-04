@@ -1,5 +1,6 @@
 package ru.pchelnikov.SpringBootDemo.Domain.Repositories;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.pchelnikov.SpringBootDemo.Domain.Services.Entities.User;
 
@@ -10,9 +11,15 @@ import java.util.List;
 @Component
 public class DBConnectionFactory {
 //    static final String JDBC_DRIVER = "org.postgresql.Driver";
-    static final String DATABASE_URL = "jdbc:postgresql://ec2-3-210-23-22.compute-1.amazonaws.com:5432/dp3r1igkksr32";
-    static final String USER = "wcwlrvcyrcewtv";
-    static final String PASSWORD = "90baf5f7622452da1845870af3979f6620f484a219913e49c79afd8655d1e49c";
+//    static final String DATABASE_URL = "jdbc:postgresql://ec2-3-210-23-22.compute-1.amazonaws.com:5432/dp3r1igkksr32";
+//    static final String USER = "wcwlrvcyrcewtv";
+//    static final String PASSWORD = "90baf5f7622452da1845870af3979f6620f484a219913e49c79afd8655d1e49c";
+    @Value("${database.URL}")
+    private String DATABASE_URL;
+    @Value("${database.user}")
+    private String USER;
+    @Value("${database.password}")
+    private String PASSWORD;
 
     public Connection getConnection() {
         try {
