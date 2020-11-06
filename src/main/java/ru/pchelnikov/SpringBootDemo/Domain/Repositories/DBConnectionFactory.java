@@ -10,10 +10,6 @@ import java.util.List;
 
 @Component
 public class DBConnectionFactory {
-//    static final String JDBC_DRIVER = "org.postgresql.Driver";
-//    static final String DATABASE_URL = "jdbc:postgresql://ec2-3-210-23-22.compute-1.amazonaws.com:5432/dp3r1igkksr32";
-//    static final String USER = "wcwlrvcyrcewtv";
-//    static final String PASSWORD = "90baf5f7622452da1845870af3979f6620f484a219913e49c79afd8655d1e49c";
     @Value("${database.URL}")
     private String DATABASE_URL;
     @Value("${database.user}")
@@ -23,7 +19,6 @@ public class DBConnectionFactory {
 
     public Connection getConnection() {
         try {
-//            Class.forName(JDBC_DRIVER);
             return DriverManager.getConnection(DATABASE_URL, USER, PASSWORD);
         } catch (Throwable e) {
             throw new RuntimeException("Error while obtaining connection!");
@@ -107,15 +102,6 @@ public class DBConnectionFactory {
                     .birthDate(resultSet.getDate("birth_date"))
                     .phone(resultSet.getString("phone"))
                     .build();
-
-//            UserDTO user = new UserDTO();
-//            user.chatId = resultSet.getLong("chat_id");
-//            user.userName = resultSet.getString("user_name");
-//            user.firstName = resultSet.getString("first_name");
-//            user.lastName = resultSet.getString("last_name");
-//            user.birthDate = resultSet.getDate("birth_date");
-//            user.phone = resultSet.getString("phone");
-
             result.add(user);
         }
         return result;
