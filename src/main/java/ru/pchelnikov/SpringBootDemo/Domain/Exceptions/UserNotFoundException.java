@@ -14,6 +14,6 @@ public class UserNotFoundException extends UserServiceException {
     }
 
     public static UserNotFoundException init(String phone) {
-        return new UserNotFoundException("User with phone " + phone + "has not been found!");
+        return new UserNotFoundException("User with phone " + phone + " has not been found!");
     }
 }

@@ -1,10 +1,9 @@
 package ru.pchelnikov.SpringBootDemo.Domain.Services;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import ru.pchelnikov.SpringBootDemo.Domain.DTOs.UserDTO;
-import ru.pchelnikov.SpringBootDemo.Domain.Repositories.UserCrudRepository;
 import ru.pchelnikov.SpringBootDemo.Domain.Services.Entities.User;
 import ru.pchelnikov.SpringBootDemo.ServicesInterfaces.IUserDAO;
 import ru.pchelnikov.SpringBootDemo.Domain.Exceptions.UserNotFoundException;
@@ -13,23 +12,24 @@ import ru.pchelnikov.SpringBootDemo.ServicesInterfaces.IUserService;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Slf4j
 @Service
-public class UserService implements IUserService {
-    private final UserCrudRepository userCrudRepository;
+@Primary
+public class JdbcUserService implements IUserService {
+
+    private final IUserDAO userDB;
     private final Map<String, Long> PHONE_TO_CHAT_ID = new HashMap<>();
 
-    public UserService(UserCrudRepository userCrudRepository) {
-        this.userCrudRepository = userCrudRepository;
+    public JdbcUserService(IUserDAO userDB) {
+        this.userDB = userDB;
     }
 
     @Override
     public void createUser(UserDTO userDTO) {
         User user = getUserFromUserDTO(userDTO);
-        if (!userCrudRepository.existsById(user.getChatId())) {
-            userCrudRepository.save(user);
+        if (!userDB.hasUser(user.getChatId())) {
+            userDB.create(user);
             log.info("User {} has been added to userList!", user.getChatId());
         } else {
             log.warn("userList already contains user {}!", user.getChatId());
@@ -40,9 +40,8 @@ public class UserService implements IUserService {
 
     @Override
     public void updateUser(UserDTO userDTO) {
-        //todo: change this into Optional.isPresent();
-        if (!userCrudRepository.existsById(userDTO.chatId)) throw UserNotFoundException.init(userDTO.chatId);
-        User oldUser = userCrudRepository.findById(userDTO.chatId).get();
+        if (!userDB.hasUser(userDTO.chatId)) throw UserNotFoundException.init(userDTO.chatId);
+        User oldUser = userDB.read(userDTO.chatId);
         User newUser = User.builder()
                 .chatId(userDTO.chatId)
                 .userName(userDTO.userName != null ? userDTO.userName : oldUser.getUserName())
@@ -51,9 +50,8 @@ public class UserService implements IUserService {
                 .birthDate(userDTO.birthDate != null ? userDTO.birthDate : oldUser.getBirthDate())
                 .phone(userDTO.phone != null ? userDTO.phone : oldUser.getPhone())
                 .build();
-        userCrudRepository.save(newUser);
+        userDB.update(newUser);
 
-        //todo remove this:
         if (newUser.getPhone() != null) {
             PHONE_TO_CHAT_ID.put(newUser.getPhone(), newUser.getChatId());
         }
@@ -64,55 +62,42 @@ public class UserService implements IUserService {
 
     @Override
     public void deleteUser(Long chatId) {
-        //todo: change this into Optional.isPresent();
-        if (!userCrudRepository.existsById(chatId)) throw UserNotFoundException.init(chatId);
-        User user = userCrudRepository.findById(chatId).get();
+        if (!userDB.hasUser(chatId)) throw UserNotFoundException.init(chatId);
+        User user = userDB.read(chatId);
         log.info("User {} is about to be deleted!", user.getUserName());
-        userCrudRepository.delete(user);
-        //todo remove  this
+        userDB.delete(chatId);
         PHONE_TO_CHAT_ID.remove(user.getPhone());
         log.info("Deletion complete!");
     }
 
     @Override
     public void deleteUser(String phone) {
-        //todo rewrite whole method
-//        if (!PHONE_TO_CHAT_ID.containsKey(phone)) throw UserNotFoundException.init(phone);
-//        Long chatId = PHONE_TO_CHAT_ID.get(phone);
-//        deleteUser(chatId);
-        User user = getUser(phone);
-        deleteUser(user.getChatId());
+        if (!PHONE_TO_CHAT_ID.containsKey(phone)) throw UserNotFoundException.init(phone);
+        Long chatId = PHONE_TO_CHAT_ID.get(phone);
+        deleteUser(chatId);
     }
 
     @Override
     public User getUser(Long chatId) {
-        //TODO rewrite method using Optional
-        if (!userCrudRepository.existsById(chatId)) throw UserNotFoundException.init(chatId);
-        return userCrudRepository.findById(chatId).get();
+        if (!userDB.hasUser(chatId)) throw UserNotFoundException.init(chatId);
+        return userDB.read(chatId);
     }
 
     @Override
     public User getUser(String phone) {
-        //todo rewrite whole method
-//        if (!PHONE_TO_CHAT_ID.containsKey(phone)) throw UserNotFoundException.init(phone);
-//        Long chatId = PHONE_TO_CHAT_ID.get(phone);
-//        return getUser(chatId);
-        Optional<User> user = userCrudRepository.findDistinctFirstByPhone(phone);
-        if (user.isPresent()) {
-            return user.get();
-        } else {
-            throw UserNotFoundException.init(phone);
-        }
+        if (!PHONE_TO_CHAT_ID.containsKey(phone)) throw UserNotFoundException.init(phone);
+        Long chatId = PHONE_TO_CHAT_ID.get(phone);
+        return getUser(chatId);
     }
 
     @Override
     public boolean hasUser(Long chatId) {
-        return userCrudRepository.existsById(chatId);
+        return userDB.hasUser(chatId);
     }
 
     @Override
     public List<User> getAllUsers() {
-        return (List<User>) userCrudRepository.findAll();
+        return userDB.getAllUsers();
     }
 
     private User getUserFromUserDTO(UserDTO userDTO) {
