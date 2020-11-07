@@ -10,10 +10,12 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestOperations;
 import ru.pchelnikov.SpringBootDemo.App.DTOs.MockServerUpdateDTO;
 import ru.pchelnikov.SpringBootDemo.App.DTOs.MockServerUserDTO;
+import ru.pchelnikov.SpringBootDemo.App.Exceptions.MockServerException;
 import ru.pchelnikov.SpringBootDemo.ServicesInterfaces.IMockServerServiceClient;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -45,10 +47,14 @@ public class MockServerServiceClient implements IMockServerServiceClient {
 
     @Override
     public MockServerUserDTO read(String phone) {
-        return readAll().stream()
+        Optional<MockServerUserDTO> user = readAll().stream()
                 .filter(dto -> phone.equals(dto.phone))
-                .findFirst()
-                .get();
+                .findFirst();
+        if (user.isPresent()) {
+            return user.get();
+        } else {
+            throw new MockServerException("No user has been found: phone=" + phone);
+        }
     }
 
     @Override

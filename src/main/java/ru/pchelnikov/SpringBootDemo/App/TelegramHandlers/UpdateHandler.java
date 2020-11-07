@@ -3,7 +3,6 @@ package ru.pchelnikov.SpringBootDemo.App.TelegramHandlers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -13,7 +12,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.pchelnikov.SpringBootDemo.Domain.DTOs.UserDTO;
 import ru.pchelnikov.SpringBootDemo.ServicesInterfaces.IUserService;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 
 import static ru.pchelnikov.SpringBootDemo.App.TelegramHandlers.UserDTOHandler.createUserDTOFromUpdate;

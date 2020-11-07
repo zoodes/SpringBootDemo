@@ -67,10 +67,14 @@ public class MockServerMockServiceClient implements IMockServerServiceClient {
 
     @Override
     public MockServerUserDTO read(String phone) {
-        return readAll().stream()
+        Optional<MockServerUserDTO> user = readAll().stream()
                 .filter(dto -> phone.equals(dto.phone))
-                .findFirst()
-                .get();
+                .findFirst();
+        if (user.isPresent()) {
+            return user.get();
+        } else {
+            throw new MockServerException("No user has been found: phone=" + phone);
+        }
     }
 
     @Override

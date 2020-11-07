@@ -58,14 +58,13 @@ public class TelegramController {
     }
 
     private UserDTO mapFromUserToUserDTO(User user) {
-        UserDTO userDTO = new UserDTO();
-        userDTO.chatId = user.getChatId();
-        userDTO.userName = user.getUserName();
-        userDTO.firstName = user.getFirstName();
-        userDTO.lastName = user.getLastName();
-        userDTO.birthDate = user.getBirthDate();
-        userDTO.phone = user.getPhone();
-        return userDTO;
+        return  UserDTO.builder()
+                    .chatId(user.getChatId())
+                    .userName(user.getUserName())
+                    .firstName(user.getFirstName())
+                    .lastName(user.getLastName())
+                    .birthDate(user.getBirthDate())
+                    .phone(user.getPhone())
+                    .build();
     }
-
 }

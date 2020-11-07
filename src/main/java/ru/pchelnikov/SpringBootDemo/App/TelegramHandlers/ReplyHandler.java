@@ -15,7 +15,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import static ru.pchelnikov.SpringBootDemo.App.TelegramHandlers.UserDTOHandler.createUserDTOFromUpdate;
 
@@ -149,10 +148,6 @@ public class ReplyHandler {
         String message = update.getMessage().getText();
         Long chatId = getChatId(update);
 
-//        if (userService.getUser(chatId).getPhone() == null) {
-//            message = "/phone";
-//        }
-
         switch(message.toLowerCase().trim()) {
             case ("/start"):
             case ("/hello"):
@@ -193,8 +188,7 @@ public class ReplyHandler {
         return update.getMessage().getChatId();
     }
 
-    //todo: make private
-    public void updateUserOnMockServer(long chatId) {
+    private void updateUserOnMockServer(long chatId) {
         User telegramUser = userService.getUser(chatId);
         MockServerUserDTO mockServerUser = mockServerServiceClient.read(telegramUser.getPhone());
         Date birthDay =
@@ -204,7 +198,6 @@ public class ReplyHandler {
                 .birthDay(birthDay)
                 .phone(telegramUser.getPhone())
                 .build();
-        //mockServerServiceClient.update(mockServerUser.id, mockServerUpdateDTO);
         boolean success = mockServerServiceClient.update(mockServerUser.id, mockServerUpdateDTO);
         log.debug(String.valueOf(success));
     }
