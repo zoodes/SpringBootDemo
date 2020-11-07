@@ -2,6 +2,7 @@ package ru.pchelnikov.SpringBootDemo.Domain.Services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import ru.pchelnikov.SpringBootDemo.Domain.DTOs.UserDTO;
 import ru.pchelnikov.SpringBootDemo.Domain.Repositories.UserCrudRepository;
@@ -17,6 +18,7 @@ import java.util.Optional;
 
 @Slf4j
 @Service
+@Primary
 public class UserService implements IUserService {
     private final UserCrudRepository userCrudRepository;
 //    private final Map<String, Long> PHONE_TO_CHAT_ID = new HashMap<>();

@@ -15,7 +15,7 @@ import java.util.Map;
 
 @Slf4j
 @Service
-@Primary
+//@Primary
 public class JdbcUserService implements IUserService {
 
     private final IUserDAO userDB;
