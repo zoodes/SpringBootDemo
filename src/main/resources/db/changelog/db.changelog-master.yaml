@@ -1,0 +1,54 @@
+databaseChangeLog:
+  - logicalFilePath: db/changelog/db.changelog-1.yaml
+  - changeSet:
+      id: 1
+      author: pchelnikoviv
+      changes:
+        - createTable:
+            tableName: user
+            columns:
+              - column:
+                  name: chat_id
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_name
+                  type: varchar(255)
+              - column:
+                  name: first_name
+                  type: varchar(255)
+              - column:
+                  name: last_name
+                  type: varchar(255)
+              - column:
+                  name: birth_date
+                  type: DATE
+              - column:
+                  name: phone
+                  type: varchar(255)
+  - changeSet:
+      id: 2
+      author: pchelnikoviv
+      comment: "create example"
+      changes:
+        - insert:
+            tableName: user
+            columns:
+              - column:
+                  name: chat_id
+                  value: 123456
+              - column:
+                  name: user_name
+                  value: "test_user"
+              - column:
+                  name: birth_date
+                  value: "2020-01-01"
+              - column:
+                  name: phone
+                  value: "12333333333"
+      rollback:
+        - delete:
+            tableName: user
+            where: chat_id = 123456

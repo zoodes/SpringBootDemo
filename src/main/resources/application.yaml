@@ -18,4 +18,7 @@ spring:
     url: jdbc:postgresql://ec2-3-210-23-22.compute-1.amazonaws.com:5432/dp3r1igkksr32
     username: wcwlrvcyrcewtv
     password: 90baf5f7622452da1845870af3979f6620f484a219913e49c79afd8655d1e49c
-
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: none
