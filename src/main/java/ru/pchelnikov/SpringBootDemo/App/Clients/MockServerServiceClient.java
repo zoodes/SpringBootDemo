@@ -8,6 +8,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestOperations;
+import ru.pchelnikov.SpringBootDemo.App.DTOs.MockServerUpdateDTO;
 import ru.pchelnikov.SpringBootDemo.App.DTOs.MockServerUserDTO;
 import ru.pchelnikov.SpringBootDemo.ServicesInterfaces.IMockServerServiceClient;
 
@@ -17,6 +18,7 @@ import java.util.UUID;
 
 @Slf4j
 public class MockServerServiceClient implements IMockServerServiceClient {
+
     @Autowired
     private RestOperations restTemplate;
     @Value("${mockServer.URL}")
@@ -47,6 +49,20 @@ public class MockServerServiceClient implements IMockServerServiceClient {
                 .filter(dto -> phone.equals(dto.phone))
                 .findFirst()
                 .get();
+    }
+
+    @Override
+    public boolean update(UUID id, MockServerUpdateDTO mockServerUpdateDTO) {
+        if (!hasUser(id)) {
+            return false;
+        } else {
+            HttpEntity<MockServerUpdateDTO> request = new HttpEntity<>(mockServerUpdateDTO);
+            ResponseEntity<String> responseEntity = restTemplate.exchange(mockServerURL + "users/" + id.toString(),
+                    HttpMethod.PATCH,
+                    request,
+                    String.class);
+            return "true".equals(responseEntity.getBody().replaceAll("\"", ""));
+        }
     }
 
     @Override

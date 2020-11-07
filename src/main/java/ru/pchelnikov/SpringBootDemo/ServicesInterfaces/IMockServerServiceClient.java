@@ -1,5 +1,6 @@
 package ru.pchelnikov.SpringBootDemo.ServicesInterfaces;
 
+import ru.pchelnikov.SpringBootDemo.App.DTOs.MockServerUpdateDTO;
 import ru.pchelnikov.SpringBootDemo.App.DTOs.MockServerUserDTO;
 
 import java.util.List;
@@ -12,4 +13,5 @@ public interface IMockServerServiceClient {
     List<MockServerUserDTO> readAll();
     boolean hasUser(String phone);
     boolean hasUser(UUID id);
+    boolean update(UUID id, MockServerUpdateDTO mockServerUpdateDTO);
 }

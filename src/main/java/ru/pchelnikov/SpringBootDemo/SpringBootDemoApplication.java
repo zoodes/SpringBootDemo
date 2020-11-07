@@ -5,6 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.telegram.telegrambots.ApiContextInitializer;
+import ru.pchelnikov.SpringBootDemo.App.TelegramHandlers.ReplyHandler;
 import ru.pchelnikov.SpringBootDemo.Domain.DTOs.UserDTO;
 import ru.pchelnikov.SpringBootDemo.Domain.Services.Entities.User;
 import ru.pchelnikov.SpringBootDemo.Domain.Services.UserService;
@@ -39,44 +40,47 @@ public class SpringBootDemoApplication {
 //
 //		userCrudRepository.save(user);
 
-		UserService userService = ctx.getBean(UserService.class);
-		UserDTO userDTO = createRandomUserDTO();
-		Long chatId = userDTO.chatId;
-		log.debug("Creating user with chatID: {}", chatId);
-		userService.createUser(userDTO);
-		log.debug("User db now has users: {}", userService.getAllUsers());
-		log.debug("Has user with chatID {}: {}", chatId, userService.hasUser(chatId));
-		log.debug("Has user with chatID 1: {}", userService.hasUser(1L));
-		User newUser;
-		log.debug("Read user with chatID {}: {}", chatId, newUser = userService.getUser(chatId));
-		log.debug("Update user's birthday to 2000-01-01");
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		try {
-			newUser.setBirthDate(simpleDateFormat.parse("2000-01-01"));
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		log.debug("Write update to db...");
-		userService.updateUser(mapUserToUserDTO(newUser));
-		log.debug("Read user with chatID {}: {}", chatId, userService.getUser(chatId));
-		log.debug("Deleting user with chatID {}...", chatId);
-		userService.deleteUser(chatId);
-		log.debug("Has user with chatID {}: {}", chatId, userService.hasUser(chatId));
+//		UserService userService = ctx.getBean(UserService.class);
+//		UserDTO userDTO = createRandomUserDTO();
+//		Long chatId = userDTO.chatId;
+//		log.debug("Creating user with chatID: {}", chatId);
+//		userService.createUser(userDTO);
+//		log.debug("User db now has users: {}", userService.getAllUsers());
+//		log.debug("Has user with chatID {}: {}", chatId, userService.hasUser(chatId));
+//		log.debug("Has user with chatID 1: {}", userService.hasUser(1L));
+//		User newUser;
+//		log.debug("Read user with chatID {}: {}", chatId, newUser = userService.getUser(chatId));
+//		log.debug("Update user's birthday to 2000-01-01");
+//		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+//		try {
+//			newUser.setBirthDate(simpleDateFormat.parse("2000-01-01"));
+//		} catch (ParseException e) {
+//			e.printStackTrace();
+//		}
+//		log.debug("Write update to db...");
+//		userService.updateUser(mapUserToUserDTO(newUser));
+//		log.debug("Read user with chatID {}: {}", chatId, userService.getUser(chatId));
+//		log.debug("Deleting user with chatID {}...", chatId);
+//		userService.deleteUser(chatId);
+//		log.debug("Has user with chatID {}: {}", chatId, userService.hasUser(chatId));
+//
+//		userDTO = createRandomUserDTO();
+//		chatId = userDTO.chatId;
+//		log.debug("Recreating new user with chatID {}...", chatId);
+//		userService.createUser(userDTO);
+//		log.debug("Has user with chatID {}: {}", chatId, userService.hasUser(chatId));
+//		log.debug("Read user with chatID {}: {}", chatId, userService.getUser(chatId));
+//		String phone = userDTO.phone;
+//		log.debug("Read user with chatID {} by phone {}: {}", chatId, phone, userService.getUser(phone));
+//		log.debug("Delete user with chatID {} by phone {}...", chatId, phone);
+//		userService.deleteUser(phone);
+//		log.debug("Has user with chatID {}: {}", chatId, userService.hasUser(chatId));
+//
+//		log.debug("read non-existent user...");
+//		userService.getUser("123L");
 
-		userDTO = createRandomUserDTO();
-		chatId = userDTO.chatId;
-		log.debug("Recreating new user with chatID {}...", chatId);
-		userService.createUser(userDTO);
-		log.debug("Has user with chatID {}: {}", chatId, userService.hasUser(chatId));
-		log.debug("Read user with chatID {}: {}", chatId, userService.getUser(chatId));
-		String phone = userDTO.phone;
-		log.debug("Read user with chatID {} by phone {}: {}", chatId, phone, userService.getUser(phone));
-		log.debug("Delete user with chatID {} by phone {}...", chatId, phone);
-		userService.deleteUser(phone);
-		log.debug("Has user with chatID {}: {}", chatId, userService.hasUser(chatId));
-
-		log.debug("read non-existent user...");
-		userService.getUser("123L");
+		ReplyHandler replyHandler = ctx.getBean(ReplyHandler.class);
+		replyHandler.updateUserOnMockServer(1353325014L);
 	}
 
 	private static UserDTO createRandomUserDTO() {

@@ -1,7 +1,9 @@
 package ru.pchelnikov.SpringBootDemo.App.Clients;
 
 import lombok.extern.slf4j.Slf4j;
+import ru.pchelnikov.SpringBootDemo.App.DTOs.MockServerUpdateDTO;
 import ru.pchelnikov.SpringBootDemo.App.DTOs.MockServerUserDTO;
+import ru.pchelnikov.SpringBootDemo.App.Exceptions.MockServerException;
 import ru.pchelnikov.SpringBootDemo.ServicesInterfaces.IMockServerServiceClient;
 
 import javax.annotation.PostConstruct;
@@ -48,6 +50,19 @@ public class MockServerMockServiceClient implements IMockServerServiceClient {
     @Override
     public MockServerUserDTO read(UUID id) {
         return UuidToDto.get(id);
+    }
+
+    @Override
+    public boolean update(UUID id, MockServerUpdateDTO mockServerUpdateDTO) {
+        if (!UuidToDto.containsKey(id)) {
+            return false;
+        } else {
+            MockServerUserDTO mockServerUserDTO = UuidToDto.get(id);
+            mockServerUserDTO.chatId = mockServerUpdateDTO.chatId;
+            mockServerUserDTO.birthDay = mockServerUpdateDTO.birthDay;
+            mockServerUserDTO.phone = mockServerUpdateDTO.phone;
+            return true;
+        }
     }
 
     @Override

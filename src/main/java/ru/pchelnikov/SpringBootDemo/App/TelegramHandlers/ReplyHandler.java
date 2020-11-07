@@ -3,6 +3,7 @@ package ru.pchelnikov.SpringBootDemo.App.TelegramHandlers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import ru.pchelnikov.SpringBootDemo.App.DTOs.MockServerUpdateDTO;
 import ru.pchelnikov.SpringBootDemo.App.DTOs.MockServerUserDTO;
 import ru.pchelnikov.SpringBootDemo.Domain.DTOs.UserDTO;
 import ru.pchelnikov.SpringBootDemo.Domain.Services.Entities.User;
@@ -14,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import static ru.pchelnikov.SpringBootDemo.App.TelegramHandlers.UserDTOHandler.createUserDTOFromUpdate;
 
@@ -56,6 +58,7 @@ public class ReplyHandler {
             MockServerUserDTO userDTO = mockServerServiceClient.read(user.getPhone());
             reply += ", \n\n"
                     + "id on MockServer: " + userDTO.id + ", \n"
+                    + "chatId on MockServer: " + userDTO.chatId + ", \n"
                     + "firstName on MockServer: " + userDTO.firstName + ", \n"
                     + "middleName on MockServer: " + userDTO.middleName + ", \n"
                     + "secondName on MockServer: " + userDTO.secondName + ", \n"
@@ -81,6 +84,11 @@ public class ReplyHandler {
         if (!chatIdReplyMode.containsKey(chatId)) {
             chatIdReplyMode.put(chatId, ReplyMode.DEFAULT);
         }
+
+        if (isPhoneNeeded(chatId)) {
+            chatIdReplyMode.put(chatId, ReplyMode.EDIT_PHONE);
+        }
+
         switch (chatIdReplyMode.get(chatId)) {
             case EDIT_BIRTHDAY:
                 reply = replyToGetBirthdayFromUser(update);
@@ -94,6 +102,11 @@ public class ReplyHandler {
         return reply;
     }
 
+    private boolean isPhoneNeeded(Long chatId) {
+        String phone = userService.getUser(chatId).getPhone();
+        return phone == null || !mockServerServiceClient.hasUser(phone);
+    }
+
     private String replyToGetPhoneFromUser(Update update) {
         String phone = update.getMessage().getText().trim();
         String reply;
@@ -104,6 +117,7 @@ public class ReplyHandler {
         if (mockServerServiceClient.hasUser(phone)) {
             Long chatId = getChatId(update);
             chatIdReplyMode.put(chatId, ReplyMode.DEFAULT);
+            updateUserOnMockServer(chatId);
 
             reply = "Phone number has been successfully entered, you are authorized";
             log.info("Phone number has been successfully retrieved for user {}", update.getMessage().getChatId());
@@ -120,7 +134,9 @@ public class ReplyHandler {
         try {
             parseBirthdateFromUserMessage(update);
             reply = "Date has been successfully entered";
-            log.info("birthDate has been successfully retrieved for user {}", update.getMessage().getChatId());
+            long chatId = getChatId(update);
+            log.info("birthDate has been successfully retrieved for user {}", chatId);
+            updateUserOnMockServer(chatId);
         } catch (ParseException e) {
             log.info("user {} entered invalid date", update.getMessage().getChatId());
             reply = "Couldn't recognize date, please, try again";
@@ -133,9 +149,9 @@ public class ReplyHandler {
         String message = update.getMessage().getText();
         Long chatId = getChatId(update);
 
-        if (userService.getUser(chatId).getPhone() == null) {
-            message = "/phone";
-        }
+//        if (userService.getUser(chatId).getPhone() == null) {
+//            message = "/phone";
+//        }
 
         switch(message.toLowerCase().trim()) {
             case ("/start"):
@@ -175,5 +191,21 @@ public class ReplyHandler {
 
     private Long getChatId(Update update) {
         return update.getMessage().getChatId();
+    }
+
+    //todo: make private
+    public void updateUserOnMockServer(long chatId) {
+        User telegramUser = userService.getUser(chatId);
+        MockServerUserDTO mockServerUser = mockServerServiceClient.read(telegramUser.getPhone());
+        Date birthDay =
+                telegramUser.getBirthDate() != null ? telegramUser.getBirthDate() : mockServerUser.birthDay;
+        MockServerUpdateDTO mockServerUpdateDTO = MockServerUpdateDTO.builder()
+                .chatId(String.valueOf(telegramUser.getChatId()))
+                .birthDay(birthDay)
+                .phone(telegramUser.getPhone())
+                .build();
+        //mockServerServiceClient.update(mockServerUser.id, mockServerUpdateDTO);
+        boolean success = mockServerServiceClient.update(mockServerUser.id, mockServerUpdateDTO);
+        log.debug(String.valueOf(success));
     }
 }

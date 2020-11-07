@@ -3,6 +3,7 @@ package ru.pchelnikov.SpringBootDemo.App.Configurations;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 import ru.pchelnikov.SpringBootDemo.App.Clients.MockServerMockServiceClient;
@@ -13,7 +14,7 @@ import ru.pchelnikov.SpringBootDemo.ServicesInterfaces.IMockServerServiceClient;
 public class MockServerClientConfig {
     @Bean
     public RestOperations restTemplate() {
-        return new RestTemplate();
+        return new RestTemplate(new HttpComponentsClientHttpRequestFactory());
     }
 
     @Bean
