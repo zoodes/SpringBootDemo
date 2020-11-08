@@ -25,7 +25,7 @@ public class UserService implements IUserService {
     @Override
     public void createUser(UserDTO userDTO) {
         User user = getUserFromUserDTO(userDTO);
-        if (!userCrudRepository.existsById(user.getChatId())) {
+        if (!userCrudRepository.existsByChatId(user.getChatId())) {
             userCrudRepository.save(user);
             log.info("User {} has been added to userList!", user.getChatId());
         } else {
@@ -36,12 +36,13 @@ public class UserService implements IUserService {
 
     @Override
     public void updateUser(UserDTO userDTO) {
-        Optional<User> userOptional = userCrudRepository.findById(userDTO.chatId);
+        Optional<User> userOptional = userCrudRepository.findDistinctByChatId(userDTO.chatId);
         if (!userOptional.isPresent()) {
             throw UserNotFoundException.init(userDTO.chatId);
         } else {
             User oldUser = userOptional.get();
             User newUser = User.builder()
+                    .id(oldUser.getId())
                     .chatId(userDTO.chatId)
                     .userName(userDTO.userName != null ? userDTO.userName : oldUser.getUserName())
                     .firstName(userDTO.firstName != null ? userDTO.firstName : oldUser.getFirstName())
@@ -58,7 +59,7 @@ public class UserService implements IUserService {
 
     @Override
     public void deleteUser(Long chatId) {
-        Optional<User> userOptional = userCrudRepository.findById(chatId);
+        Optional<User> userOptional = userCrudRepository.findDistinctByChatId(chatId);
         if (!userOptional.isPresent()) {
             throw UserNotFoundException.init(chatId);
         } else {
@@ -77,7 +78,7 @@ public class UserService implements IUserService {
 
     @Override
     public User getUser(Long chatId) {
-        Optional<User> userOptional = userCrudRepository.findById(chatId);
+        Optional<User> userOptional = userCrudRepository.findDistinctByChatId(chatId);
         if (!userOptional.isPresent()) {
             throw UserNotFoundException.init(chatId);
         } else {
@@ -97,7 +98,7 @@ public class UserService implements IUserService {
 
     @Override
     public boolean hasUser(Long chatId) {
-        return userCrudRepository.existsById(chatId);
+        return userCrudRepository.existsByChatId(chatId);
     }
 
     @Override

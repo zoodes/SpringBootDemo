@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -14,8 +15,15 @@ import java.util.Date;
 @Builder
 @Entity
 @Table(name = "user", schema = "public")
+@Audited
 public class User {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_seq")
+//    @SequenceGenerator(name = "user_id_seq", sequenceName = "user_id_seq", allocationSize = 1)
+    @Column(name = "id")
+    private Long id;
+
     @Column(name = "chat_id")
     private long chatId;
 

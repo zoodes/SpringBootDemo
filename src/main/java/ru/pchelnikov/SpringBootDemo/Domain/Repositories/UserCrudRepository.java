@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface UserCrudRepository extends CrudRepository<User, Long> {
     Optional<User> findDistinctFirstByPhone(String phone);
+    Optional<User> findDistinctByChatId(Long chatId);
+    boolean existsByChatId(Long chatId);
 }
