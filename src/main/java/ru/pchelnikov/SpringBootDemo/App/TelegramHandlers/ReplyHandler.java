@@ -121,7 +121,7 @@ public class ReplyHandler {
             reply = "Phone number has been successfully entered, you are authorized";
             log.info("Phone number has been successfully retrieved for user {}", update.getMessage().getChatId());
         } else {
-            reply = "User with phone " + phone + " has not been found on MockServer. Please enter valid phone number " +
+            reply = "User has not been found on MockServer. Please enter valid phone number " +
                     "or make sure that user with that phone actually exists on MockServer";
             log.info("User with phone number {} has not been found on MockServer", phone);
         }
