@@ -5,13 +5,7 @@ bot:
 mockServer:
   URL: https://serene-coast-56441.herokuapp.com/api/
 
-database:
-  URL: jdbc:postgresql://ec2-3-210-23-22.compute-1.amazonaws.com:5432/dp3r1igkksr32
-  user: wcwlrvcyrcewtv
-  password: 90baf5f7622452da1845870af3979f6620f484a219913e49c79afd8655d1e49c
-
 useMockServerClient: false
-useMockUserDAO: false
 
 spring:
   datasource:

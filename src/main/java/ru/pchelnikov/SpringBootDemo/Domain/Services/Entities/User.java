@@ -14,7 +14,8 @@ import java.util.Date;
 @Data
 @Builder
 @Entity
-@Table(name = "user", schema = "public")
+//@Table(name = "user", schema = "public")
+@Table(name = "user")
 @Audited
 public class User {
 

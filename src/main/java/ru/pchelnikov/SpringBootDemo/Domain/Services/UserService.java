@@ -1,7 +1,6 @@
 package ru.pchelnikov.SpringBootDemo.Domain.Services;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import ru.pchelnikov.SpringBootDemo.Domain.DTOs.UserDTO;
 import ru.pchelnikov.SpringBootDemo.Domain.Exceptions.UserNotFoundException;
@@ -14,7 +13,6 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-@Primary
 public class UserService implements IUserService {
     private final UserCrudRepository userCrudRepository;
 
