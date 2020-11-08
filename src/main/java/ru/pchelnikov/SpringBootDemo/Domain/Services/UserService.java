@@ -65,6 +65,7 @@ public class UserService implements IUserService {
         } else {
             User user = userOptional.get();
             log.info("User {} is about to be deleted!", user.getChatId());
+            log.debug("User: {}", user);
             userCrudRepository.delete(user);
             log.info("Deletion complete!");
         }
