@@ -1,6 +1,6 @@
 bot:
   name: pchel_test_bot
-  token: 1273448729:AAEsX77rwpBf-i1iYFLkbvOFctnUEVsY6vc
+  token: 1273448729:AAEsX77rwpBf-i1iYFLkbvOFctnUEVsY6vclsit
 
 mockServer:
   URL: https://serene-coast-56441.herokuapp.com/api/
@@ -9,9 +9,9 @@ useMockServerClient: false
 
 spring:
   datasource:
-    url: jdbc:postgresql://ec2-3-224-38-18.compute-1.amazonaws.com:5432/dciq3sp6s9ri2j
-    username: gyrggouqtcjoqi
-    password: 32a6208be646737b54e82d0103a4bd04441f312fa19ba249a79024af92763a32
+    url: jdbc:postgresql://ec2-3-224-38-18.compute-1.amazonaws.com:5432/dciq3sp6s9ri2jsdtg
+    username: gyrggouqtcjoqisdft
+    password: 32a6208be646737b54e82d0103a4bd04441f312fa19ba249a79024af92763a32sdft
   jpa:
     show-sql: false
     hibernate:
